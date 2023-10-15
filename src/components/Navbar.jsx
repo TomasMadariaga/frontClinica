@@ -1,10 +1,8 @@
-import {useState} from 'react'
 import { Link } from "react-router-dom";
 import logo from '../assets/icon3.webp'
 
-export const Navbar = () => {
+export const Navbar = ({isLoggedIn, user, handleLogout}) => {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
   return (
@@ -13,6 +11,7 @@ export const Navbar = () => {
         <img src={logo} alt="Logo clínica" className="h-9 w-9" />
       </Link>
       <ul className="w-11/12 flex list-none justify-end m-0 p-0 items-center">
+        <li className='py-2.5 font-sans font-medium text-slate-100 text-xl px-2'>{isLoggedIn ? `${user}` : false}</li>
         <li className="py-2.5">
           {isLoggedIn ? (
             <button
