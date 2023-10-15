@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState } from "react";
-import Register from "./components/Register";
+import Register from "./components/RegisterPatient";
 import Login from "./components/Login";
 import { Navbar } from "./components/Navbar";
 import { Home } from "./components/Home";
@@ -20,7 +20,7 @@ function App() {
     // Limpia loggedInUser
     setUser('');
 
-    // Redirige a /iniciarSesion
+    // Redirige a /auth/login
     window.location.href = '/auth/login'; // Utiliza window.location.href para redirigir
   };
 

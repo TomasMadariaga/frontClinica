@@ -16,18 +16,17 @@ const RegisterPatient = () => {
     let value = e.target.value;
 
     if (e.target.type === "date" && value) {
-      // Formatear la fecha al formato "YYYY-MM-DD"
       const date = new Date(value);
       const formattedDate = date.toISOString().substring(0, 10);
       value = formattedDate;
     }
 
     if (e.target.name === "planId") {
-      value = parseInt(value, 10); // Asegurarse de que sea un número base 10
+      value = parseInt(value, 10); 
     }
 
     if (e.target.name === "dni") {
-      value = parseInt(value, 10); // Asegurarse de que sea un número base 10
+      value = parseInt(value, 10); 
     }
 
     setFormData({
@@ -64,6 +63,7 @@ const RegisterPatient = () => {
           placeholder="Name"
           name="name"
           id="name"
+          required
           value={formData.name}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -77,6 +77,7 @@ const RegisterPatient = () => {
           placeholder="Lastname"
           id="lastname"
           name="lastname"
+          required
           value={formData.lastname}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -90,6 +91,7 @@ const RegisterPatient = () => {
           placeholder="Birthdate"
           id="birthdate"
           name="birthdate"
+          required
           value={formData.birthdate}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -103,6 +105,7 @@ const RegisterPatient = () => {
           placeholder="ID"
           id="dni"
           name="dni"
+          required
           value={formData.dni}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -111,7 +114,7 @@ const RegisterPatient = () => {
         <label htmlFor="planId" className="block font-medium">
           Health plan:
         </label>
-        <select id="planId" name="planId" value={formData.planId} onChange={handleChange}>
+        <select id="planId" name="planId" value={formData.planId} required onChange={handleChange}>
           <option>Select a Plan</option>
           <option value="1">Classic $399</option>
           <option value="2">Family $699</option>
@@ -125,6 +128,7 @@ const RegisterPatient = () => {
           placeholder="Email"
           id="email"
           name="email"
+          required
           value={formData.email}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -135,9 +139,10 @@ const RegisterPatient = () => {
         </label>
         <input
           type="password"
-          placeholder="Contraseña"
+          placeholder="Password"
           id="password"
           name="password"
+          required
           value={formData.password}
           onChange={handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
@@ -146,7 +151,7 @@ const RegisterPatient = () => {
           type="submit"
           className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600"
         >
-          Registrarse
+          Sign Up
         </button>
       </form>
     </div>
