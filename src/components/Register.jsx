@@ -52,84 +52,102 @@ const RegisterPatient = () => {
   };
 
   return (
-    <div>
-      <h2>Registro de Paciente</h2>
-      
-      <label htmlFor="name">Nombre:</label>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-md mx-auto p-6 bg-teal-500 rounded-lg shadow-lg my-2">
+      <h2 className="text-2xl font-semibold mb-6">Create an account</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label htmlFor="name" className="block font-medium">
+          Name:
+        </label>
         <input
           type="text"
-          placeholder="Nombre"
+          placeholder="Name"
           name="name"
+          id="name"
           value={formData.name}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
-        <br />
-
-        <label htmlFor="lastname">Apellido:</label>
+        <label htmlFor="lastname" className="block font-medium">
+          Lastname:
+        </label>
         <input
           type="text"
-          placeholder="Apellido"
+          placeholder="Lastname"
+          id="lastname"
           name="lastname"
           value={formData.lastname}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
-        <br />
-
-        <label htmlFor="birthdate">Fecha de Nacimiento:</label>
+        <label htmlFor="birthdate" className="block font-medium">
+          Birthdate
+        </label>
         <input
           type="date"
-          placeholder="Fecha de nacimiento"
+          placeholder="Birthdate"
+          id="birthdate"
           name="birthdate"
           value={formData.birthdate}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
-        <br />
-
-        <label htmlFor="dni">DNI:</label>
+        <label htmlFor="dni" className="block font-medium">
+          ID:
+        </label>
         <input
           type="number"
-          placeholder="DNI"
+          placeholder="ID"
+          id="dni"
           name="dni"
           value={formData.dni}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
-        <br />
-
-        <label htmlFor="planId">Plan de Salud:</label>
-        <select name="planId" value={formData.planId} onChange={handleChange}>
-          <option>Seleccione un Plan</option>
-          <option value="1">Plan Clasico</option>
-          <option value="2">Plan Familiar</option>
-          {/* Agrega más opciones según tus necesidades */}
+        <label htmlFor="planId" className="block font-medium">
+          Health plan:
+        </label>
+        <select id="planId" name="planId" value={formData.planId} onChange={handleChange}>
+          <option>Select a Plan</option>
+          <option value="1">Classic $399</option>
+          <option value="2">Family $699</option>
         </select>
 
-        <br />
-
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email" className="block font-medium">
+          Email:
+        </label>
         <input
           type="email"
           placeholder="Email"
+          id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
-        <br />
-
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password" className="block font-medium">
+          Password:
+        </label>
         <input
           type="password"
           placeholder="Contraseña"
+          id="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
-        <button type="submit">Registrarse</button>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600"
+        >
+          Registrarse
+        </button>
       </form>
     </div>
   );
