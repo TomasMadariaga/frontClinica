@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
+import {useNavigate} from 'react-router-dom'
 
-const Login = () => {
+const Login = ({onLogin}) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -28,6 +30,8 @@ const Login = () => {
         formData
       );
       console.log("Inicio de sesión exitoso:", response.data);
+      onLogin()
+      navigate('/')
 
       // Aquí puedes guardar el token en el almacenamiento local o en las cookies
       // y redirigir al usuario a la página correspondiente según su rol
@@ -37,32 +41,35 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="p-4 max-w-md mx-auto bg-teal-500 rounded-lg my-2">
+      <h2 className="text-2xl font-semibold mb-4 text-slate-100">Sign In</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="email"
           placeholder="Email"
           name="email"
           value={formData.email}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
         <input
           type={showPassword ? "text" : "password"}
-          placeholder="Contraseña"
+          placeholder="Password"
           name="password"
           value={formData.password}
           onChange={handleChange}
+          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
-        <label>
+        <label className="text-slate-100">
           <input
             type="checkbox"
             checked={showPassword}
             onChange={handleShowPassword}
+            id="checkbox"
           />
-          Mostrar contraseña
+          Show Password
         </label>
-        <button type="submit">Iniciar Sesión</button>
+        <button type="submit" className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600">Sign In</button>
       </form>
     </div>
   );
