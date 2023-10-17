@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate} from "react-router-dom";
 
 const RegisterPatient = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ const RegisterPatient = () => {
     dni: "",
     planId: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -43,6 +46,7 @@ const RegisterPatient = () => {
         "http://localhost:3000/auth/register/patient",
         formData
       );
+      navigate('/')
       console.log("Registro exitoso:", response.data);
     } catch (error) {
       console.error("Error en el registro:", error);

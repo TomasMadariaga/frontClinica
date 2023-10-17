@@ -1,8 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = ({ handleLogin }) => {
+  const { dispatch } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -31,8 +33,11 @@ const Login = ({ handleLogin }) => {
       );
       // Inicio de sesión exitoso, actualiza el estado de autenticación
       const token = response.data.token;
-      handleLogin(response.data.user);
-      localStorage.setItem("authToken", token);
+      const role = response.data.role;
+      dispatch({ type: "LOGIN", payload: {token, role} });
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      handleLogin(response.data);
 
       console.log("Inicio de sesión exitoso:", response.data);
 
@@ -41,8 +46,11 @@ const Login = ({ handleLogin }) => {
       // y redirigir al usuario a la página correspondiente según su rol
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
+      alert(`Email or password wrong ${error}`)
     }
   };
+
+  
 
   return (
     <div className="p-4 max-w-md mx-auto bg-teal-500 rounded-lg my-2">
@@ -77,7 +85,12 @@ const Login = ({ handleLogin }) => {
             </label>
           </li>
           <li>
-            <Link to='/auth/register/patient' className="underline text-blue-700">Don't have an account?</Link>
+            <Link
+              to="/auth/register/patient"
+              className="underline text-blue-700"
+            >
+              Don't have an account?
+            </Link>
           </li>
         </ul>
 
@@ -88,6 +101,7 @@ const Login = ({ handleLogin }) => {
           Sign In
         </button>
       </form>
+      
     </div>
   );
 };
