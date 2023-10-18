@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
   const initialState = {
     isAuthenticated: false,
     token: null,
-    role: null, // Agrega una propiedad para el rol
+    role: null,
   };
 
   const authReducer = (state, action) => {
@@ -16,13 +16,13 @@ export function AuthProvider({ children }) {
         return {
           isAuthenticated: true,
           token: action.payload.token,
-          role: action.payload.role, // Establece el rol al iniciar sesión
+          role: action.payload.role,
         };
       case "LOGOUT":
         return {
           isAuthenticated: false,
           token: null,
-          role: null, // Borra el rol al cerrar sesión
+          role: null,
         };
       default:
         return state;
@@ -37,12 +37,11 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       dispatch({
         type: "LOGIN",
-        payload: { token: storedToken, role: storedRole },
+        payload: { token: storedToken, role: storedRole},
       });
     }
-    console.log(`Token: ${storedToken} Role: ${storedRole}`)
   }, []);
-  
+
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
       {children}

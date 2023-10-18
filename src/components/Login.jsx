@@ -34,9 +34,11 @@ const Login = ({ handleLogin }) => {
       // Inicio de sesión exitoso, actualiza el estado de autenticación
       const token = response.data.token;
       const role = response.data.role;
+      const name = response.data.name
       dispatch({ type: "LOGIN", payload: {token, role} });
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("name", name)
       handleLogin(response.data);
 
       console.log("Inicio de sesión exitoso:", response.data);

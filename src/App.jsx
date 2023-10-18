@@ -9,18 +9,18 @@ import { useAuth } from "./context/AuthContext";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {
-  // const { state, dispatch } = useAuth();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { state, dispatch } = useAuth();
   const [user, setUser] = useState(null);
 
   const handleLogin = (userData) => {
-    setIsLoggedIn(true);
     setUser(userData);
+    console.log(userData)
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("name")
     // setUser("");
 
     dispatch({ type: "LOGOUT" });
@@ -31,7 +31,6 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Navbar
-          isLoggedIn={isLoggedIn}
           user={user}
           handleLogout={handleLogout}
         />
