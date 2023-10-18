@@ -4,6 +4,8 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import { Navbar } from "./components/Navbar";
 import { Home } from "./components/Home";
+import Footer from "./components/Footer";
+import Shifts from "./components/Shifts";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -11,30 +13,33 @@ function App() {
 
   const handleLogin = (userData) => {
     setIsLoggedIn(true);
-    setUser(userData)
+    setUser(userData);
   };
 
   const handleLogout = () => {
     // Elimina el token del almacenamiento local
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     // Limpia loggedInUser
-    setUser('');
+    setUser("");
 
     // Redirige a /iniciarSesion
-    window.location.href = '/auth/login'; // Utiliza window.location.href para redirigir
+    window.location.href = "/auth/login"; // Utiliza window.location.href para redirigir
   };
-
- 
 
   return (
     <BrowserRouter>
-      <Navbar isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout}/>
+      <Navbar isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
       <Routes>
-        <Route path="/" element={<Home />}/>
+        <Route path="/" element={<Home />} />
         <Route path="/auth/register/patient" element={<Register />} />
-        <Route path="/auth/login" element={<Login handleLogin={handleLogin} />} />
+        <Route
+          path="/auth/login"
+          element={<Login handleLogin={handleLogin} />}
+        />
+        <Route path="/turnos" element={<Shifts />} />
         {/* Otras rutas de tu aplicación */}
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

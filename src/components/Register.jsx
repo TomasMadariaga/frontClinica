@@ -66,6 +66,7 @@ const RegisterPatient = () => {
           id="name"
           value={formData.name}
           onChange={handleChange}
+          required
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
@@ -79,6 +80,7 @@ const RegisterPatient = () => {
           name="lastname"
           value={formData.lastname}
           onChange={handleChange}
+          required
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
@@ -92,6 +94,7 @@ const RegisterPatient = () => {
           name="birthdate"
           value={formData.birthdate}
           onChange={handleChange}
+          required
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
@@ -105,13 +108,14 @@ const RegisterPatient = () => {
           name="dni"
           value={formData.dni}
           onChange={handleChange}
+          required
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
         <label htmlFor="planId" className="block font-medium">
           Health plan:
         </label>
-        <select id="planId" name="planId" value={formData.planId} onChange={handleChange}>
+        <select id="planId" name="planId" value={formData.planId} onChange={handleChange} required> 
           <option>Select a Plan</option>
           <option value="1">Classic $399</option>
           <option value="2">Family $699</option>
@@ -127,6 +131,7 @@ const RegisterPatient = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
+          required
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
 
@@ -140,6 +145,7 @@ const RegisterPatient = () => {
           name="password"
           value={formData.password}
           onChange={handleChange}
+          required
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
         />
         <button
