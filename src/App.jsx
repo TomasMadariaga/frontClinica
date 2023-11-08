@@ -7,6 +7,8 @@ import { Home } from "./components/Home";
 import { Admin } from "./components/Admin";
 import { useAuth } from "./context/AuthContext";
 import { AuthProvider } from "./context/AuthContext";
+import { Medic } from "./components/Medic";
+import { Patient } from "./components/Patient";
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -21,7 +23,6 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("name")
-    // setUser("");
 
     dispatch({ type: "LOGOUT" });
     window.location.href = "/auth/login";
@@ -42,7 +43,8 @@ function App() {
             element={<Login handleLogin={handleLogin} />}
           />
           <Route path="/admin" element={<Admin />} />
-          {/* Otras rutas de tu aplicación */}
+          <Route path="/medic" element={<Medic/>}/>
+          <Route path="/patient" element={<Patient/>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

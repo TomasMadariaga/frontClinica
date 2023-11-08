@@ -11,7 +11,9 @@ export const Admin = () => {
   const [showHistoriasClinicas, setShowHistoriasClinicas] = useState(false);
   const [showRegisterMedic, setShowRegisterMedic] = useState(false);
   const [showRegisterAdmin, setShowRegisterAdmin] = useState(false);
+  const [showMedicalArticle, setShowMedicalArticle] = useState(false);
   const [isCreatingPlan, setIsCreatingPlan] = useState(false);
+  const [editArticle, setEditArticle] = useState(null);
   const [newPlan, setNewPlan] = useState({
     type: "",
     price: "",
@@ -21,6 +23,7 @@ export const Admin = () => {
   const [plans, setPlans] = useState([]);
   const [turnos, setTurnos] = useState([]);
   const [historias, setHistorias] = useState([]);
+  const [medicalArticle, setMedicalArticle] = useState([]);
 
   useEffect(() => {
     axios
@@ -58,6 +61,16 @@ export const Admin = () => {
       .catch((error) => {
         console.error("Error al obtener la lista de historias:", error);
       });
+
+    axios
+      .get("http://localhost:3000/articles/")
+      .then((response) => {
+        setMedicalArticle(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("error al obtener los articulos", error);
+      });
   }, []);
 
   const toggleUsers = () => {
@@ -67,6 +80,7 @@ export const Admin = () => {
     setShowHistoriasClinicas(false);
     setShowRegisterMedic(false);
     setShowRegisterAdmin(false);
+    setShowMedicalArticle(false);
   };
 
   const togglePlans = () => {
@@ -76,6 +90,7 @@ export const Admin = () => {
     setShowHistoriasClinicas(false);
     setShowRegisterMedic(false);
     setShowRegisterAdmin(false);
+    setShowMedicalArticle(false);
   };
 
   const toggleTurnos = () => {
@@ -85,6 +100,7 @@ export const Admin = () => {
     setShowHistoriasClinicas(false);
     setShowRegisterMedic(false);
     setShowRegisterAdmin(false);
+    setShowMedicalArticle(false);
   };
 
   const toggleHistoriasClinicas = () => {
@@ -94,6 +110,7 @@ export const Admin = () => {
     setShowTurnos(false);
     setShowRegisterMedic(false);
     setShowRegisterAdmin(false);
+    setShowMedicalArticle(false);
   };
 
   const toggleRegister = () => {
@@ -103,15 +120,27 @@ export const Admin = () => {
     setShowTurnos(false);
     setShowHistoriasClinicas(false);
     setShowRegisterAdmin(false);
+    setShowMedicalArticle(false);
   };
 
   const toggleRegisterAdmin = () => {
-    setShowRegisterAdmin(!showRegisterAdmin)
+    setShowRegisterAdmin(!showRegisterAdmin);
     setShowUsers(false);
     setShowPlans(false);
     setShowTurnos(false);
     setShowHistoriasClinicas(false);
-    setShowRegisterMedic(false)
+    setShowRegisterMedic(false);
+    setShowMedicalArticle(false);
+  };
+
+  const toggleArticles = () => {
+    setShowMedicalArticle(!showMedicalArticle);
+    setShowUsers(false);
+    setShowPlans(false);
+    setShowTurnos(false);
+    setShowHistoriasClinicas(false);
+    setShowRegisterMedic(false);
+    setShowRegisterAdmin(false);
   };
 
   const startCreatingPlan = () => {
@@ -135,7 +164,7 @@ export const Admin = () => {
     name: "",
     email: "",
     password: "",
-  })
+  });
 
   const handleChange = (e) => {
     let value = e.target.value;
@@ -166,10 +195,52 @@ export const Admin = () => {
     console.log(updatedUsers[userIndex]);
   };
 
+  const handleEditArticle = (articleIndex, field, value) => {
+    const updatedArticle = [...medicalArticle];
+    updatedArticle[articleIndex][field] = value;
+    setMedicalArticle(updatedArticle);
+    console.log(updatedArticle[articleIndex]);
+  };
+
   const handleEditPlan = (planIndex, field, value) => {
     const updatedPlans = [...plans];
     updatedPlans[planIndex][field] = value;
     setPlans(updatedPlans);
+  };
+
+  const cancelEdit = () => {
+    setEditArticle(null);
+  };
+
+  const updateMedicalArticle = async (editedArticle) => {
+    const { id, creationDate, ...articleData } = editedArticle;
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/articles/${id}`,
+        articleData
+      );
+      alert(`Artículo médico editado exitosamente`);
+    } catch (error) {
+      console.error("Error al actualizar el artículo médico:", error);
+    }
+  };
+
+  const handleSaveEditedArticle = (editedArticle) => {
+    const updatePromise = updateMedicalArticle(editedArticle);
+  
+    updatePromise
+      .then((response) => {
+        const updatedMedicalArticles = medicalArticle.map((article) =>
+          article.id === editedArticle.id ? editedArticle : article
+        );
+  
+        setMedicalArticle(updatedMedicalArticles);
+  
+        setEditArticle(null);
+      })
+      .catch((error) => {
+        console.error("Error al guardar el artículo médico:", error);
+      });
   };
 
   const updateUserData = async (user) => {
@@ -187,7 +258,6 @@ export const Admin = () => {
 
   const updatePlanData = async (plan) => {
     try {
-      // Convierte 'price' en un número decimal
       const priceAsNumber = parseInt(plan.price);
 
       // Crea un nuevo objeto con 'price' como número
@@ -211,10 +281,8 @@ export const Admin = () => {
 
   const createNewPlan = async () => {
     try {
-      // Convierte 'price' en un número decimal
       const priceAsNumber = parseInt(newPlan.price);
 
-      // Crea un nuevo objeto con 'price' como número
       const dataToSend = {
         type: newPlan.type,
         price: priceAsNumber,
@@ -226,10 +294,8 @@ export const Admin = () => {
         dataToSend
       );
 
-      // Agrega el nuevo plan a la lista
       setPlans([...plans, response.data]);
 
-      // Restablece los campos
       setIsCreatingPlan(false);
       setNewPlan({ type: "", price: "" });
     } catch (error) {
@@ -286,6 +352,19 @@ export const Admin = () => {
     }
   };
 
+  const deleteArticle = async (articleId) => {
+    try {
+      await axios.delete(`http://localhost:3000/articles/${articleId}`);
+
+      const updatedArticle = medicalArticle.filter(
+        (medicalArticle) => medicalArticle.id !== articleId
+      );
+      setMedicalArticle(updatedArticle);
+    } catch (error) {
+      console.error("Error al eliminar el articulo", error);
+    }
+  };
+
   const registerMedic = async (e) => {
     e.preventDefault();
     try {
@@ -312,8 +391,6 @@ export const Admin = () => {
     }
   };
 
-  
-
   useEffect(() => {
     if (state.isAuthenticated) {
       axios.defaults.headers.common["Authorization"] = `${state.token}`;
@@ -327,8 +404,8 @@ export const Admin = () => {
     (state.isAuthenticated && state.role === "superadmin")
   ) {
     return (
-      <div className="flex min-h-screen">
-        <nav className="w-64 bg-gray-700 text-white p-4">
+      <div className="flex w-full">
+        <nav className="w-64 bg-gray-700 text-white min-h-screen p-4">
           <ul className="space-y-2">
             <li
               className={`group relative py-2 px-4 rounded-md cursor-pointer transition-colors ${
@@ -364,20 +441,30 @@ export const Admin = () => {
             </li>
             <li
               className={`group relative py-2 px-4 rounded-md cursor-pointer transition-colors ${
+                showMedicalArticle ? "bg-blue-500 text-gray-100" : ""
+              }`}
+              onClick={toggleArticles}
+            >
+              <span className="text-lg">Articles</span>
+            </li>
+            <li
+              className={`group relative py-2 px-4 rounded-md cursor-pointer transition-colors ${
                 showRegisterMedic ? "bg-blue-500 text-gray-100" : ""
               }`}
               onClick={toggleRegister}
             >
               <span className="text-lg">Register Medic</span>
             </li>
-            {state.role === "superadmin" && (<li
-              className={`group relative py-2 px-4 rounded-md cursor-pointer transition-colors ${
-                showRegisterAdmin ? "bg-blue-500 text-gray-100" : ""
-              }`}
-              onClick={toggleRegisterAdmin}
-            >
-              <span className="text-lg">Register Admin</span>
-            </li>)}
+            {state.role === "superadmin" && (
+              <li
+                className={`group relative py-2 px-4 rounded-md cursor-pointer transition-colors ${
+                  showRegisterAdmin ? "bg-blue-500 text-gray-100" : ""
+                }`}
+                onClick={toggleRegisterAdmin}
+              >
+                <span className="text-lg">Register Admin</span>
+              </li>
+            )}
           </ul>
         </nav>
         <div className="p-4">
@@ -536,7 +623,7 @@ export const Admin = () => {
                 List of Shifts
               </h2>
               <div>
-                {turnos.map((turno, index) => (
+                {turnos.map((turno) => (
                   <div
                     key={turno.id}
                     className="bg-gray-800 rounded-lg p-4 my-2"
@@ -628,7 +715,9 @@ export const Admin = () => {
           )}
           {showRegisterMedic && (
             <div className=" mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2">
-              <h2 className="text-2xl text-white font-semibold mb-6">Create an account</h2>
+              <h2 className="text-2xl text-white font-semibold mb-6">
+                Create an account
+              </h2>
 
               <form onSubmit={registerMedic} className="space-y-4">
                 <label htmlFor="name" className="block font-medium text-white">
@@ -645,7 +734,10 @@ export const Admin = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
 
-                <label htmlFor="lastname" className="block font-medium text-white">
+                <label
+                  htmlFor="lastname"
+                  className="block font-medium text-white"
+                >
                   Lastname:
                 </label>
                 <input
@@ -676,7 +768,10 @@ export const Admin = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
 
-                <label htmlFor="specialty" className="block font-medium text-white">
+                <label
+                  htmlFor="specialty"
+                  className="block font-medium text-white"
+                >
                   Specialty:
                 </label>
                 <select
@@ -709,7 +804,10 @@ export const Admin = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
 
-                <label htmlFor="password" className="block font-medium text-white">
+                <label
+                  htmlFor="password"
+                  className="block font-medium text-white"
+                >
                   Password:
                 </label>
                 <input
@@ -732,8 +830,10 @@ export const Admin = () => {
             </div>
           )}
           {showRegisterAdmin && state.role === "superadmin" && (
-            <div className=" mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2">
-              <h2 className="text-2xl text-white font-semibold mb-6">Create an account</h2>
+            <div className="mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2">
+              <h2 className="text-2xl text-white font-semibold mb-6">
+                Create an account
+              </h2>
 
               <form onSubmit={registerAdmin} className="space-y-4">
                 <label htmlFor="name" className="block font-medium text-white">
@@ -764,7 +864,10 @@ export const Admin = () => {
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
 
-                <label htmlFor="password" className="block font-medium text-white">
+                <label
+                  htmlFor="password"
+                  className="block font-medium text-white"
+                >
                   Password:
                 </label>
                 <input
@@ -784,6 +887,101 @@ export const Admin = () => {
                   Sign Up
                 </button>
               </form>
+            </div>
+          )}
+          {showMedicalArticle && (
+            <div>
+              {medicalArticle.map((article, index) => (
+                <div
+                  key={article.id}
+                  className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl mt-4"
+                >
+                  <div className="md:flex">
+                    <div className="md:flex-shrink-0">
+                      <img
+                        className="h-48 w-full object-cover md:w-48"
+                        src={article.imageUrl}
+                        alt="Article Image"
+                      />
+                    </div>
+                    <div className="p-8">
+                      <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                        {new Date(article.creationDate).toLocaleDateString()}
+                      </div>
+                      {editArticle === article ? (
+                        <div>
+                          <label
+                            htmlFor="title"
+                            className="block mt-2 text-black font-bold text-xl"
+                          >
+                            Title:
+                          </label>
+                          <input
+                            type="text"
+                            id="title"
+                            className="mb-2 border border-black rounded-md p-1"
+                            value={editArticle.title}
+                            onChange={(e) =>
+                              handleEditArticle(index, "title", e.target.value)}
+                          />
+                          <label
+                            htmlFor="content"
+                            className="block mt-2 text-black font-bold text-xl"
+                          >
+                            Content:
+                          </label>
+                          <textarea
+                            id="content"
+                            className="mb-2 border border-black rounded-md p-1 max-w-md"
+                            value={editArticle.content}
+                            onChange={(e) =>
+                              handleEditArticle(index, "content", e.target.value)}
+                          />
+                          <div className="flex justify-center">
+                            <button
+                              className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 h-10 w-20 m-2"
+                              onClick={() => handleSaveEditedArticle(editArticle)}
+                            >
+                              Guardar
+                            </button>
+                            <button
+                              onClick={() => cancelEdit()}
+                              className="bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 text-center p-2 m-2"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <h2 className="block mt-1 text-lg leading-tight font-medium text-black">
+                          {article.title}
+                        </h2>
+                      )}
+                      {editArticle !== article && (
+                        <label className="block mt-2 text-gray-500">
+                          {article.content}
+                        </label>
+                      )}
+                    </div>
+                    <div className="p-8">
+                      {editArticle !== article && (
+                        <button
+                          className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 h-10 w-14"
+                          onClick={() => setEditArticle(article)}
+                        >
+                          Edit
+                        </button>
+                      )}
+                      <button
+                        className="bg-red-500 text-white font-semibold h-7 w-7 rounded-full hover:bg-red-600 text-center mx-2"
+                        onClick={() => deleteArticle(article.id)}
+                      >
+                        X
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
