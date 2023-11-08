@@ -31,28 +31,26 @@ const Login = ({ handleLogin }) => {
         "http://localhost:3000/auth/login",
         formData
       );
-      // Inicio de sesión exitoso, actualiza el estado de autenticación
+      console.log(response.data)
       const token = response.data.token;
       const role = response.data.role;
       const name = response.data.name;
-      dispatch({ type: "LOGIN", payload: {token, role} });
+      const id = parseInt(response.data.id)
+      dispatch({ type: "LOGIN", payload: { token, role } });
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-      localStorage.setItem("name", name)
+      localStorage.setItem("name", name);
+      localStorage.setItem("id", id)
       handleLogin(response.data);
 
       console.log("Inicio de sesión exitoso:");
 
       navigate("/");
-      // Aquí puedes guardar el token en el almacenamiento local o en las cookies
-      // y redirigir al usuario a la página correspondiente según su rol
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      alert(`Email or password wrong ${error}`)
+      alert(`Email or password wrong ${error}`);
     }
   };
-
-  
 
   return (
     <div className="p-4 max-w-md mx-auto bg-teal-500 rounded-lg my-2">
@@ -103,7 +101,6 @@ const Login = ({ handleLogin }) => {
           Sign In
         </button>
       </form>
-      
     </div>
   );
 };
