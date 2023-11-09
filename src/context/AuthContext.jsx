@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       dispatch({
         type: "LOGIN",
-        payload: { token: storedToken, role: storedRole},
+        payload: { token: storedToken, role: storedRole },
       });
     }
   }, []);
