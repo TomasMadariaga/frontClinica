@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import {DateTime} from 'luxon'
 
 export const Medic = () => {
   const id = localStorage.getItem("id");
@@ -15,7 +16,6 @@ export const Medic = () => {
     axios
       .get(`http://localhost:3000/turnos/user-id/${id}`)
       .then((response) => {
-        console.log(response.data);
         setShifts(response.data);
       })
       .catch((error) => {
@@ -55,10 +55,10 @@ export const Medic = () => {
                 Day: {new Date(shift.startDate).toLocaleDateString()}
               </p>
               <p className="text-white">
-                Start: {new Date(shift.startDate).toLocaleTimeString()}
+                Start: {DateTime.fromISO(shift.startDate).toLocaleString(DateTime.TIME_24_SIMPLE)}
               </p>
               <p className="text-white">
-                Finish: {new Date(shift.endDate).toLocaleTimeString()}
+                Finish: {DateTime.fromISO(shift.endDate).toLocaleString(DateTime.TIME_24_SIMPLE)}
               </p>
               
             </div>
