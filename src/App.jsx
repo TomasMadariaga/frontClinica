@@ -9,6 +9,9 @@ import { useAuth } from "./context/AuthContext";
 import { AuthProvider } from "./context/AuthContext";
 import Footer from "./components/Footer";
 import Payment from "./components/Payment";
+import { Medic } from "./components/Medic";
+import { Patient } from "./components/Patient";
+
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -22,8 +25,6 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    localStorage.removeItem("name");
-    // setUser("");
 
     dispatch({ type: "LOGOUT" });
     window.location.href = "/auth/login";
@@ -41,7 +42,8 @@ function App() {
             element={<Login handleLogin={handleLogin} />}
           />
           <Route path="/admin" element={<Admin />} />
-          {/* Otras rutas de tu aplicación */}
+          <Route path="/medic" element={<Medic/>}/>
+          <Route path="/patient" element={<Patient/>}/>
         </Routes>
         <Footer />
       </AuthProvider>
