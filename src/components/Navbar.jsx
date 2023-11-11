@@ -14,6 +14,10 @@ export const Navbar = ({ user, handleLogout }) => {
     const isMedic =
     (user && user.role === "medic") ||
     storedRole === "medic";
+
+    const isPatient =
+    (user && user.role === "patient") ||
+    storedRole === "patient";
     
   return (
     <nav className="flex px-5 m-0 w-screen h-14 max-h-14 bg-teal-600 shadow-md">
@@ -42,9 +46,19 @@ export const Navbar = ({ user, handleLogout }) => {
           <li className="py-2.5">
             <Link
               to="/medic"
-              className="bg-sky-600 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-500"
+              className="bg-sky-700 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
             >
               Medic
+            </Link>
+          </li>
+        )}
+        {isPatient && (
+          <li className="py-2.5">
+            <Link
+              to="/patient"
+              className="bg-sky-700 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
+            >
+              Take shift
             </Link>
           </li>
         )}

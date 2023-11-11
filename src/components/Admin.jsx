@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import Login from "./Login";
+import { DateTime } from "luxon";
 
 export const Admin = () => {
   const { state } = useAuth();
@@ -48,6 +49,7 @@ export const Admin = () => {
       .get("http://localhost:3000/turnos/info")
       .then((response) => {
         setTurnos(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error al obtener la lista de turnos", error);
@@ -66,7 +68,6 @@ export const Admin = () => {
       .get("http://localhost:3000/articles/")
       .then((response) => {
         setMedicalArticle(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.error("error al obtener los articulos", error);
@@ -158,6 +159,9 @@ export const Admin = () => {
     lastname: "",
     registrationNumber: "",
     specialty: "",
+    workingDays: [],
+    startTime: "",
+    endTime: "",
   });
 
   const [formDataAdmin, setFormDataAdmin] = useState({
@@ -212,6 +216,24 @@ export const Admin = () => {
     setEditArticle(null);
   };
 
+  const handleWorkingDayChange = (event) => {
+    const selectedDay = Number(event.target.value); // Convierte el valor del checkbox a número
+    const updatedWorkingDays = [...formDataMedic.workingDays]; // Crea una copia del array de días de trabajo
+
+    if (event.target.checked) {
+      // Si se marca el checkbox, añade el día a los días seleccionados
+      updatedWorkingDays.push(selectedDay);
+    } else {
+      // Si se desmarca el checkbox, filtra el día del array de días de trabajo
+      const index = updatedWorkingDays.indexOf(selectedDay);
+      if (index !== -1) {
+        updatedWorkingDays.splice(index, 1);
+      }
+    }
+
+    setFormDataMedic({ ...formDataMedic, workingDays: updatedWorkingDays });
+  };
+
   const updateMedicalArticle = async (editedArticle) => {
     const { id, creationDate, ...articleData } = editedArticle;
     try {
@@ -227,15 +249,15 @@ export const Admin = () => {
 
   const handleSaveEditedArticle = (editedArticle) => {
     const updatePromise = updateMedicalArticle(editedArticle);
-  
+
     updatePromise
       .then((response) => {
         const updatedMedicalArticles = medicalArticle.map((article) =>
           article.id === editedArticle.id ? editedArticle : article
         );
-  
+
         setMedicalArticle(updatedMedicalArticles);
-  
+
         setEditArticle(null);
       })
       .catch((error) => {
@@ -279,6 +301,20 @@ export const Admin = () => {
     }
   };
 
+  // const handleWorkingDayChange = (event) => {
+  //   const { name, value, checked } = event.target;
+  //   let updatedWorkingDays = formDataMedic.workingDays;
+
+  //   if (checked) {
+  //     updatedWorkingDays = [...updatedWorkingDays, Number(value)];
+  //   } else {
+  //     updatedWorkingDays = updatedWorkingDays.filter((day) => day !== Number(value));
+  //   }
+  // setFormDataMedic({
+  //   ...formDataMedic,
+  //   [name]: updatedWorkingDays,
+  // });
+  // }
   const createNewPlan = async () => {
     try {
       const priceAsNumber = parseInt(newPlan.price);
@@ -365,6 +401,22 @@ export const Admin = () => {
     }
   };
 
+  const handleStartTimeChange = (event) => {
+    const { name, value } = event.target;
+    setFormDataMedic({
+      ...formDataMedic,
+      [name]: value,
+    });
+  };
+
+  const handleEndTimeChange = (event) => {
+    const { name, value } = event.target;
+    setFormDataMedic({
+      ...formDataMedic,
+      [name]: value,
+    });
+  };
+
   const registerMedic = async (e) => {
     e.preventDefault();
     try {
@@ -429,7 +481,7 @@ export const Admin = () => {
               }`}
               onClick={togglePlans}
             >
-              <span className="text-lg">Wealth Plans</span>
+              <span className="text-lg">Health Plans</span>
             </li>
             <li
               className={`group relative py-2 px-4 rounded-md cursor-pointer transition-colors ${
@@ -467,7 +519,7 @@ export const Admin = () => {
             )}
           </ul>
         </nav>
-        <div className="p-4">
+        <div className="p-4 w-full">
           {showUsers && (
             <div className="bg-gray-700 px-4 py-2 border rounded-lg">
               <h2 className="font-sans font-bold text-white text-center py-4">
@@ -535,9 +587,9 @@ export const Admin = () => {
           )}
 
           {showPlans && (
-            <div className="bg-gray-700 px-4 py-2 border rounded-lg w-full">
+            <div className="bg-gray-700 px-4 py-2 border rounded-lg w-3/6">
               <h2 className="font-sans font-bold text-white text-center py-4">
-                List of wealth plans
+                List of health plans
               </h2>
               <div>
                 {plans.map((plan, index) => (
@@ -618,7 +670,7 @@ export const Admin = () => {
           )}
 
           {showTurnos && (
-            <div className="bg-gray-700 px-4 py-2 border rounded-lg">
+            <div className="bg-gray-700 px-4 py-2 border rounded-lg w-3/6">
               <h2 className="font-sans font-bold text-white text-center py-4">
                 List of Shifts
               </h2>
@@ -641,7 +693,7 @@ export const Admin = () => {
                         <span className="text-lg">X</span>
                       </button>
                     </div>
-                    <div className="flex gap-5 mt-2">
+                    <div className="flex mt-2">
                       <div className="w-1/3">
                         <h4 className="text-white text-sm font-semibold">
                           Medic
@@ -660,7 +712,18 @@ export const Admin = () => {
                         <h4 className="text-white text-sm font-semibold">
                           Date
                         </h4>
-                        <p className="text-white text-sm">{turno.date}</p>
+                        <p className="text-white text-sm">
+                          Start:{" "}
+                          {DateTime.fromISO(turno.startDate).toFormat(
+                            "yyyy-MM-dd HH:mm"
+                          )}
+                        </p>
+                        <p className="text-white text-sm">
+                          End:{" "}
+                          {DateTime.fromISO(turno.endDate).toFormat(
+                            "yyyy-MM-dd HH:mm"
+                          )}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -669,7 +732,7 @@ export const Admin = () => {
             </div>
           )}
           {showHistoriasClinicas && (
-            <div className="bg-gray-700 px-4 py-2 border rounded-lg w-11/12">
+            <div className="bg-gray-700 px-4 py-2 border rounded-lg w-2/6">
               <h2 className="font-sans font-bold text-white text-center py-4">
                 Patient Medical Records
               </h2>
@@ -698,8 +761,12 @@ export const Admin = () => {
                         </p>
                       </li>
                       <li>
-                        <h2 className="font-semibold text-white">Date Shift</h2>
-                        <p className="text-white text-sm">{historia.date}</p>
+                        <h2 className="font-semibold text-white">Date</h2>
+                        <p className="text-white text-sm">
+                          {DateTime.fromISO(historia.date).toLocaleString(
+                            DateTime.DATE_MED
+                          )}
+                        </p>
                       </li>
                     </ul>
                     <button
@@ -714,7 +781,7 @@ export const Admin = () => {
             </div>
           )}
           {showRegisterMedic && (
-            <div className=" mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2">
+            <div className=" mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2 w-2/5">
               <h2 className="text-2xl text-white font-semibold mb-6">
                 Create an account
               </h2>
@@ -820,6 +887,63 @@ export const Admin = () => {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
                 />
+                <label
+                  htmlFor="workingDays"
+                  className="block font-medium text-white"
+                >
+                  Working Days:
+                </label>
+                <div className="grid grid-cols-3 gap-4">
+                  <label className="flex items-center">
+                    <span>Start Time:</span>
+                    <input
+                      type="time"
+                      name="startTime"
+                      step="3600"
+                      value={formDataMedic.startTime}
+                      onChange={handleStartTimeChange}
+                      className="ml-2 border border-gray-300 rounded-md p-2"
+                    />
+                  </label>
+                  <label className="flex items-center">
+                    <span>End Time:</span>
+                    <input
+                      type="time"
+                      name="endTime"
+                      step="3600"
+                      value={formDataMedic.endTime}
+                      onChange={handleEndTimeChange}
+                      className="ml-2 border border-gray-300 rounded-md p-2"
+                    />
+                  </label>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-white font-bold">
+                  {Array.from(Array(7), (e, i) => {
+                    const day = i + 1;
+                    const dayNames = [
+                      "Monday",
+                      "Tuesday",
+                      "Wednesday",
+                      "Thursday",
+                      "Friday",
+                      "Saturday",
+                      "Sunday",
+                    ];
+                    return (
+                      <label key={day} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          name="workingDays"
+                          value={day}
+                          onChange={handleWorkingDayChange}
+                          className="mr-2"
+                          checked={formDataMedic.workingDays.includes(day)}
+                        />
+                        {dayNames[i]}
+                      </label>
+                    );
+                  })}
+                </div>
                 <button
                   type="submit"
                   className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600"
@@ -830,7 +954,7 @@ export const Admin = () => {
             </div>
           )}
           {showRegisterAdmin && state.role === "superadmin" && (
-            <div className="mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2">
+            <div className="mx-auto p-6 bg-gray-800 rounded-lg shadow-lg my-2 w-2/5">
               <h2 className="text-2xl text-white font-semibold mb-6">
                 Create an account
               </h2>
@@ -890,90 +1014,88 @@ export const Admin = () => {
             </div>
           )}
           {showMedicalArticle && (
-            <div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {medicalArticle.map((article, index) => (
                 <div
                   key={article.id}
-                  className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl mt-4"
+                  className="bg-white rounded-xl shadow-2xl overflow-hidden my-4 md:my-0"
                 >
-                  <div className="md:flex">
-                    <div className="md:flex-shrink-0">
-                      <img
-                        className="h-48 w-full object-cover md:w-48"
-                        src={article.imageUrl}
-                        alt="Article Image"
-                      />
+                  <img
+                    className="h-64 w-full object-cover object-center"
+                    src={article.imageUrl}
+                    alt="Article Image"
+                  />
+                  <div className="p-4">
+                    <div className="text-gray-500 text-sm mb-2">
+                      {new Date(article.creationDate).toLocaleDateString()}
                     </div>
-                    <div className="p-8">
-                      <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-                        {new Date(article.creationDate).toLocaleDateString()}
-                      </div>
-                      {editArticle === article ? (
-                        <div>
-                          <label
-                            htmlFor="title"
-                            className="block mt-2 text-black font-bold text-xl"
+                    {editArticle === article ? (
+                      <div>
+                        <label
+                          htmlFor="title"
+                          className="block text-black font-bold"
+                        >
+                          Title:
+                        </label>
+                        <input
+                          type="text"
+                          id="title"
+                          className="mb-2 border border-black rounded-md p-1 w-full"
+                          value={editArticle.title}
+                          onChange={(e) =>
+                            handleEditArticle(index, "title", e.target.value)
+                          }
+                        />
+                        <label
+                          htmlFor="content"
+                          className="block text-black font-bold"
+                        >
+                          Content:
+                        </label>
+                        <textarea
+                          id="content"
+                          className="mb-2 border border-black rounded-md p-1 w-full"
+                          value={editArticle.content}
+                          onChange={(e) =>
+                            handleEditArticle(index, "content", e.target.value)
+                          }
+                        />
+                        <div className="flex justify-center">
+                          <button
+                            className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 h-10 w-20 m-2"
+                            onClick={() => handleSaveEditedArticle(editArticle)}
                           >
-                            Title:
-                          </label>
-                          <input
-                            type="text"
-                            id="title"
-                            className="mb-2 border border-black rounded-md p-1"
-                            value={editArticle.title}
-                            onChange={(e) =>
-                              handleEditArticle(index, "title", e.target.value)}
-                          />
-                          <label
-                            htmlFor="content"
-                            className="block mt-2 text-black font-bold text-xl"
+                            Guardar
+                          </button>
+                          <button
+                            onClick={() => cancelEdit()}
+                            className="bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 h-10 w-20 m-2"
                           >
-                            Content:
-                          </label>
-                          <textarea
-                            id="content"
-                            className="mb-2 border border-black rounded-md p-1 max-w-md"
-                            value={editArticle.content}
-                            onChange={(e) =>
-                              handleEditArticle(index, "content", e.target.value)}
-                          />
-                          <div className="flex justify-center">
-                            <button
-                              className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 h-10 w-20 m-2"
-                              onClick={() => handleSaveEditedArticle(editArticle)}
-                            >
-                              Guardar
-                            </button>
-                            <button
-                              onClick={() => cancelEdit()}
-                              className="bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 text-center p-2 m-2"
-                            >
-                              Cancelar
-                            </button>
-                          </div>
+                            Cancelar
+                          </button>
                         </div>
-                      ) : (
-                        <h2 className="block mt-1 text-lg leading-tight font-medium text-black">
+                      </div>
+                    ) : (
+                      <div className="mb-2">
+                        <h2 className="text-lg font-medium text-black">
                           {article.title}
                         </h2>
-                      )}
-                      {editArticle !== article && (
-                        <label className="block mt-2 text-gray-500">
+                        <p className="text-gray-600 line-clamp-3">
                           {article.content}
-                        </label>
-                      )}
-                    </div>
-                    <div className="p-8">
+                        </p>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center">
                       {editArticle !== article && (
                         <button
-                          className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 h-10 w-14"
+                          className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 h-10 w-20"
                           onClick={() => setEditArticle(article)}
                         >
                           Edit
                         </button>
                       )}
                       <button
-                        className="bg-red-500 text-white font-semibold h-7 w-7 rounded-full hover:bg-red-600 text-center mx-2"
+                        className="bg-red-500 text-white font-semibold h-10 w-10 rounded-full hover:bg-red-600 flex justify-center items-center"
                         onClick={() => deleteArticle(article.id)}
                       >
                         X
