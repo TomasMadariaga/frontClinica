@@ -8,7 +8,7 @@ import { Admin } from "./components/Admin";
 import { useAuth } from "./context/AuthContext";
 import { AuthProvider } from "./context/AuthContext";
 import Footer from "./components/Footer";
-import Payment from "./components/Payment";
+// import Payment from "./components/Payment";
 import { Medic } from "./components/Medic";
 import { Patient } from "./components/Patient";
 
@@ -25,6 +25,7 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("name");
 
     dispatch({ type: "LOGOUT" });
     window.location.href = "/auth/login";

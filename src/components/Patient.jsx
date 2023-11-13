@@ -3,6 +3,8 @@ import axios from "axios";
 import { DateTime } from "luxon";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Patient = () => {
   const [medics, setMedics] = useState([]);
@@ -16,6 +18,7 @@ export const Patient = () => {
 
   const IdUser = localStorage.getItem("id");
   const userId = parseInt(IdUser);
+  console.log(userId)
 
   const handleCreateTurn = async (e) => {
     e.preventDefault();
@@ -41,9 +44,9 @@ export const Patient = () => {
       };
 
       const response = await axios.post("http://localhost:3000/turnos", data);
-      console.log("Turno creado:", response.data);
+      toast.success("Turno creado exitosamente!");
     } catch (error) {
-      console.error("Error al crear el turno:", error);
+      toast.error("Hubo un error al crear el turno");
     }
   };
 
@@ -163,6 +166,7 @@ export const Patient = () => {
           </button>
         </form>
       </div>
+      <ToastContainer/>
     </div>
   );
 };

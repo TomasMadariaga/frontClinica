@@ -3,6 +3,10 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import Login from "./Login";
 import { DateTime } from "luxon";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export const Admin = () => {
   const { state } = useAuth();
@@ -217,14 +221,12 @@ export const Admin = () => {
   };
 
   const handleWorkingDayChange = (event) => {
-    const selectedDay = Number(event.target.value); // Convierte el valor del checkbox a número
-    const updatedWorkingDays = [...formDataMedic.workingDays]; // Crea una copia del array de días de trabajo
+    const selectedDay = Number(event.target.value); 
+    const updatedWorkingDays = [...formDataMedic.workingDays]; 
 
     if (event.target.checked) {
-      // Si se marca el checkbox, añade el día a los días seleccionados
       updatedWorkingDays.push(selectedDay);
     } else {
-      // Si se desmarca el checkbox, filtra el día del array de días de trabajo
       const index = updatedWorkingDays.indexOf(selectedDay);
       if (index !== -1) {
         updatedWorkingDays.splice(index, 1);
@@ -241,9 +243,9 @@ export const Admin = () => {
         `http://localhost:3000/articles/${id}`,
         articleData
       );
-      alert(`Artículo médico editado exitosamente`);
+      toast.success("Articulo medico editado correctamente")
     } catch (error) {
-      console.error("Error al actualizar el artículo médico:", error);
+      toast.success("Error al editar el articulo")
     }
   };
 
@@ -271,10 +273,10 @@ export const Admin = () => {
       .put(`http://localhost:3000/auth/${user.id}`, userData)
       .then((response) => {
         console.log(response.data);
-        alert(`Usuario editado exitosamente`);
+        toast.success("Usuario editado correctamente")
       })
       .catch((error) => {
-        console.error("Error al actualizar el usuario:", error);
+        toast.error("Error al editar el usuario")
       });
   };
 
@@ -295,26 +297,12 @@ export const Admin = () => {
       );
 
       console.log(response.data);
-      alert(`Plan editado exitosamente`);
+      toast.success("Plan editado correctamente")
     } catch (error) {
-      console.error("Error al actualizar el plan:", error);
+      toast.error("Error al editar el plan")
     }
   };
 
-  // const handleWorkingDayChange = (event) => {
-  //   const { name, value, checked } = event.target;
-  //   let updatedWorkingDays = formDataMedic.workingDays;
-
-  //   if (checked) {
-  //     updatedWorkingDays = [...updatedWorkingDays, Number(value)];
-  //   } else {
-  //     updatedWorkingDays = updatedWorkingDays.filter((day) => day !== Number(value));
-  //   }
-  // setFormDataMedic({
-  //   ...formDataMedic,
-  //   [name]: updatedWorkingDays,
-  // });
-  // }
   const createNewPlan = async () => {
     try {
       const priceAsNumber = parseInt(newPlan.price);
@@ -334,71 +322,116 @@ export const Admin = () => {
 
       setIsCreatingPlan(false);
       setNewPlan({ type: "", price: "" });
+      toast.success("Plan creado")
     } catch (error) {
-      console.error("Error al crear el plan:", error);
+      toast.error("Error al crear el plan")
     }
   };
 
   const deleteUser = async (userId) => {
-    try {
-      // Realiza una solicitud para eliminar el usuario en el servidor
-      await axios.delete(`http://localhost:3000/auth/${userId}`);
-      // Actualiza la lista de usuarios después de la eliminación
-      const updatedUsers = users.filter((user) => user.id !== userId);
-      setUsers(updatedUsers);
-    } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
-    }
+    confirmAlert({title: 'Confirmar para borrar', message:"Estas seguro de borrar el usuario?", buttons: [
+      {
+        label: "Yes",
+        onClick: async () => {try {
+          await axios.delete(`http://localhost:3000/auth/${userId}`);
+          const updatedUsers = users.filter((user) => user.id !== userId);
+          setUsers(updatedUsers);
+          toast.info("Usuario eliminado")
+        } catch (error) {
+          toast.error("Error al eliminar el usuario")
+        }}
+      },
+      {
+        label: "No"
+      }
+    ]})
+    
   };
 
   const deletePlan = async (planId) => {
-    try {
-      // Realiza una solicitud para eliminar el usuario en el servidor
-      await axios.delete(`http://localhost:3000/planes/${planId}`);
-      // Actualiza la lista de usuarios después de la eliminación
-      const updatedPlanes = plans.filter((plan) => plan.id !== planId);
-      setPlans(updatedPlanes);
-    } catch (error) {
-      console.error("Error al eliminar el plan: ", error);
-    }
+    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar el plan?", buttons: [
+      {
+        label: "Yes",
+        onClick: async () => {try {
+          await axios.delete(`http://localhost:3000/planes/${planId}`);
+          const updatedPlanes = plans.filter((plan) => plan.id !== planId);
+          setPlans(updatedPlanes);
+          toast.info("Plan eliminado")
+        } catch (error) {
+          toast.error("Error al eliminar el plan")
+        }}
+      },
+      {
+        label: "No"
+      }
+    ]})
+    
   };
 
   const deleteShift = async (shiftId) => {
-    try {
-      // Realiza una solicitud para eliminar el usuario en el servidor
-      await axios.delete(`http://localhost:3000/turnos/${shiftId}`);
-      // Actualiza la lista de usuarios después de la eliminación
-      const updatedShifts = turnos.filter((shift) => shift.id !== shiftId);
-      setTurnos(updatedShifts);
-    } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
-    }
+    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar el turno medico?", buttons: [
+      {
+        label: "Yes",
+        onClick: async () => {try {
+          await axios.delete(`http://localhost:3000/turnos/${shiftId}`);
+          const updatedShifts = turnos.filter((shift) => shift.id !== shiftId);
+          setTurnos(updatedShifts);
+          toast.info("Turno medico eliminado")
+        } catch (error) {
+          toast.error("Error al eliminar el turno medico")
+        }}
+      },
+      {
+        label: "No"
+      }
+    ]})
+    
   };
 
   const deleteHistoriaClinica = async (historiaId) => {
-    try {
-      await axios.delete(`http://localhost:3000/historias/${historiaId}`);
-
-      const updatedHistoria = historias.filter(
-        (historia) => historia.id !== historiaId
-      );
-      setHistorias(updatedHistoria);
-    } catch (error) {
-      console.error("Error al eliminar la historia: ", error);
-    }
+    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar la historia clinica?", buttons: [
+      {
+        label: "Yes",
+        onClick: async () => {try {
+          await axios.delete(`http://localhost:3000/historias/${historiaId}`);
+    
+          const updatedHistoria = historias.filter(
+            (historia) => historia.id !== historiaId
+          );
+          setHistorias(updatedHistoria);
+          toast.info("Historia clinica eliminada")
+        } catch (error) {
+          toast.error("Error al eliminar la historia clinica")
+        }}
+      },
+      {
+        label: "No"
+      }
+    ]})
+    
   };
 
   const deleteArticle = async (articleId) => {
-    try {
-      await axios.delete(`http://localhost:3000/articles/${articleId}`);
-
-      const updatedArticle = medicalArticle.filter(
-        (medicalArticle) => medicalArticle.id !== articleId
-      );
-      setMedicalArticle(updatedArticle);
-    } catch (error) {
-      console.error("Error al eliminar el articulo", error);
-    }
+    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar el articulo medico?", buttons: [
+      {
+        label: "Yes",
+        onClick: async () => {try {
+          await axios.delete(`http://localhost:3000/articles/${articleId}`);
+    
+          const updatedArticle = medicalArticle.filter(
+            (medicalArticle) => medicalArticle.id !== articleId
+          );
+          setMedicalArticle(updatedArticle);
+          toast.info("Articulo medico eliminado")
+        } catch (error) {
+          toast.error("Error al eliminar el articulo medico")
+        }}
+      },
+      {
+        label: "No"
+      }
+    ]})
+    
   };
 
   const handleStartTimeChange = (event) => {
@@ -424,9 +457,9 @@ export const Admin = () => {
         "http://localhost:3000/auth/register/medic",
         formDataMedic
       );
-      console.log("Registro exitoso:", response.data);
+      toast.success("Medico registrado exitosamente")
     } catch (error) {
-      console.error("Error en el registro:", error);
+      toast.error("Error al registrar al medico")
     }
   };
 
@@ -437,9 +470,9 @@ export const Admin = () => {
         "http://localhost:3000/auth/register/admin",
         formDataAdmin
       );
-      console.log("Registro exitoso:", response.data);
+      toast.success("Admin registrado correctamente")
     } catch (error) {
-      console.error("Error en el registro:", error);
+      toast.error("Error al registrar el admin")
     }
   };
 
@@ -520,6 +553,7 @@ export const Admin = () => {
           </ul>
         </nav>
         <div className="p-4 w-full">
+          <ToastContainer/>
           {showUsers && (
             <div className="bg-gray-700 px-4 py-2 border rounded-lg">
               <h2 className="font-sans font-bold text-white text-center py-4">
@@ -894,7 +928,7 @@ export const Admin = () => {
                   Working Days:
                 </label>
                 <div className="grid grid-cols-3 gap-4">
-                  <label className="flex items-center">
+                  <label className="flex items-center text-white font-semibold">
                     <span>Start Time:</span>
                     <input
                       type="time"
@@ -905,7 +939,7 @@ export const Admin = () => {
                       className="ml-2 border border-gray-300 rounded-md p-2"
                     />
                   </label>
-                  <label className="flex items-center">
+                  <label className="flex items-center text-white font-semibold">
                     <span>End Time:</span>
                     <input
                       type="time"
