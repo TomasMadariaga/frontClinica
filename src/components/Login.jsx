@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = ({ handleLogin }) => {
   const { dispatch } = useAuth();
@@ -48,7 +50,7 @@ const Login = ({ handleLogin }) => {
       navigate("/");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      alert(`Email or password wrong ${error}`);
+      toast.error(`Email o contraseña incorrectas`)
     }
   };
 
@@ -101,6 +103,7 @@ const Login = ({ handleLogin }) => {
           Sign In
         </button>
       </form>
+    <ToastContainer/>
     </div>
   );
 };

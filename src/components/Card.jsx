@@ -55,20 +55,6 @@ function Card() {
                 </li>
               ))}
             </ul>
-            {/* Call to action */}
-            <a
-              href="/"
-              className={`mt-8 block rounded-lg px-6 py-4 text-center text-sm font-semibold leading-4 
-          
-            ${
-              plan.mostPopular
-                ? "text-white bg-teal-500 hover:bg-teal-600 shadow-md"
-                : "text-teal-700 bg-teal-50 hover:bg-teal-100"
-            }
-          `}
-            >
-              {plan.cta}
-            </a>
           </div>
         ))}
       </div>
