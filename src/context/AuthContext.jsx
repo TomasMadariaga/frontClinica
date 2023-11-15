@@ -30,7 +30,6 @@ export function AuthProvider({ children }) {
   };
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Al cargar la página, verifica si existe un token en el almacenamiento local
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedRole = localStorage.getItem("role");

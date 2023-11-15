@@ -11,7 +11,7 @@ import Footer from "./components/Footer";
 // import Payment from "./components/Payment";
 import { Medic } from "./components/Medic";
 import { Patient } from "./components/Patient";
-
+import ClinicalHistory from "./components/MedicalHistory";
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -43,8 +43,9 @@ function App() {
             element={<Login handleLogin={handleLogin} />}
           />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/medic" element={<Medic/>}/>
-          <Route path="/patient" element={<Patient/>}/>
+          <Route path="/medic" element={<Medic />} />
+          <Route path="/patient" element={<Patient />} />
+          <Route path="/historia-clinica/:id" element={<ClinicalHistory />} />
         </Routes>
         <Footer />
       </AuthProvider>
