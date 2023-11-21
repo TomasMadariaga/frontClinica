@@ -12,6 +12,7 @@ import Footer from "./components/Footer";
 import { Medic } from "./components/Medic";
 import { Patient } from "./components/Patient";
 import ClinicalHistory from "./components/MedicalHistory";
+import { Profile } from "./components/Profile";
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -46,6 +47,7 @@ function App() {
           <Route path="/medic" element={<Medic />} />
           <Route path="/patient" element={<Patient />} />
           <Route path="/historia-clinica/:id" element={<ClinicalHistory />} />
+          <Route path="/profile/:id" element={<Profile/>}/>
         </Routes>
         <Footer />
       </AuthProvider>
