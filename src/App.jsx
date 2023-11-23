@@ -12,6 +12,11 @@ import Footer from "./components/Footer";
 import { Medic } from "./components/Medic";
 import { Patient } from "./components/Patient";
 import ClinicalHistory from "./components/MedicalHistory";
+import MedicalList from "./components/MedicList";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsAndConditions from "./components/TermsAndConditions";
+import Visits from "./components/Visits";
+import Contact from "./components/Contact";
 import { Profile } from "./components/Profile";
 
 function App() {
@@ -47,7 +52,16 @@ function App() {
           <Route path="/medic" element={<Medic />} />
           <Route path="/patient" element={<Patient />} />
           <Route path="/historia-clinica/:id" element={<ClinicalHistory />} />
-          <Route path="/profile/:id" element={<Profile/>}/>
+          <Route path="/medical-list" element={<MedicalList />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route
+            path="/terms-and-conditions"
+            element={<TermsAndConditions />}
+          />
+          <Route path="/hours-of-operation-and-visits" element={<Visits />} />
+          <Route path="/contact" element={<Contact />} />
+
+          <Route path="/profile/:id" element={<Profile />} />
         </Routes>
         <Footer />
       </AuthProvider>
