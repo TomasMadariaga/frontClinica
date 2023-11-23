@@ -1,210 +1,231 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
+import { useParams } from "react-router-dom";
 
 export const Profile = () => {
-  const id = localStorage.getItem("id");
+  const {
+    state: { role },
+  } = useAuth();
+  const { id } = useParams();
+  const userId = localStorage.getItem("id");
   const [user, setUser] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [plans, setPlans] = useState("");
   const [editedUser, setEditedUser] = useState({
-    name: user.name || "",
-    email: user.email || "",
-    password: user.password || "",
+    name: "",
+    email: "",
+    password: "",
   });
   const [editedPatient, setEditedPatient] = useState({
-    patientName: user.patientName || "",
-    patientLastname: user.patientLastname || "",
-    dni: user.dni || "",
-    birthdate: user.birthdate || "",
-    planId: user.planId || "",
+    patientName: "",
+    patientLastname: "",
+    dni: "",
+    birthdate: "",
+    planId: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    if (isEditing) {
-      if (name in editedUser) {
-        setEditedUser((prevUser) => ({
-          ...prevUser,
-          [name]: value,
-        }));
-      } else if (name in editedPatient) {
-        if (name === "birthdate") {
-          const formattedDate = new Date(value).toISOString().split("T")[0];
-          setEditedPatient((prevPatient) => ({
-            ...prevPatient,
-            [name]: formattedDate,
-          }));
-        } else {
-          setEditedPatient((prevPatient) => ({
-            ...prevPatient,
-            [name]: value,
-          }));
-        }
-      }
-    } else {
-      // Si no estás editando, refleja los valores actuales de user
-      if (name in editedUser) {
-        setEditedUser((prevUser) => ({
-          ...prevUser,
-          [name]: user[name],
-        }));
-      } else if (name in editedPatient) {
-        setEditedPatient((prevPatient) => ({
-          ...prevPatient,
-          [name]: user[name],
-        }));
-      }
+    if (name in editedPatient) {
+      setEditedPatient((prevEditedPatient) => ({
+        ...prevEditedPatient,
+        [name]: value,
+      }));
+    } else if (name in editedUser) {
+      setEditedUser((prevEditedUser) => ({
+        ...prevEditedUser,
+        [name]: value,
+      }));
     }
   };
 
   const handleSaveClick = async () => {
     try {
-      // Campos específicos para el usuario
-      const userFields = {
-        name: editedUser.name ?? user.name,
-        email: editedUser.email ?? user.email,
-        password: editedUser.password ?? user.password,
-      };
+      const birthdateString = editedPatient.birthdate ?? "";
+      const birthdate = new Date(birthdateString.split("T")[0]);
+      const birthdateISO = birthdate.toISOString().split("T")[0];
+      const numberDni = parseInt(editedPatient.dni);
+      const numberPlanId = parseInt(editedPatient.planId);
 
-      // Campos específicos para el paciente
-      const patientFields = {
-        patientLastname: editedPatient.patientLastname ?? user.patientLastname,
-        dni: editedPatient.dni ?? user.dni,
-        planId: editedPatient.planId ?? user.planId,
-        birthdate: editedPatient.birthdate ?? user.birthdate,
-      };
+      editedPatient.planId = numberPlanId;
+      editedPatient.dni = numberDni;
+      editedPatient.birthdate = birthdateISO;
 
-      // Actualizar editedUser con los campos modificados del usuario
-      setEditedUser((prevUser) => ({ ...prevUser, ...userFields }));
-
-      // Actualizar editedPatient con los campos modificados del paciente
-      setEditedPatient((prevPatient) => ({ ...prevPatient, ...patientFields }));
-
-      console.log('userFields:', userFields)
-      console.log('editedUser:', editedUser)
-      // Enviar la solicitud PUT para el usuario
       const responseUser = await axios.put(
-        `http://localhost:3000/auth/${user.id}`,
-        userFields
-      );
-      console.log(
-        "Cambios de usuario guardados exitosamente:",
-        responseUser.data
+        `http://localhost:3000/auth/${userId}`,
+        editedUser
       );
 
-      // Enviar la solicitud PUT para el paciente
+      const patientName = editedUser.name;
+      editedPatient.patientName = patientName;
       const responsePatient = await axios.put(
         `http://localhost:3000/pacientes/${user.patientId}`,
-        patientFields
+        editedPatient
       );
-      setEditedPatient(responsePatient.data);
-      console.log(
-        "Cambios de paciente guardados exitosamente:",
-        responsePatient.data
-      );
+      toast.success("Datos cambiados con exito");
+      setIsEditing(false);
+      localStorage.setItem("name", editedUser.name);
     } catch (error) {
-      console.error("Error al guardar cambios:", error);
+      toast.error("Error al cambiar los datos");
     }
   };
 
   useEffect(() => {
     axios.get(`http://localhost:3000/auth/users/${id}`).then((response) => {
       setUser(response.data[0]);
+      console.log(userId, id)
     }),
       axios.get("http://localhost:3000/planes").then((response) => {
         setPlans(response.data);
       });
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setEditedUser({
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      });
+
+      setEditedPatient({
+        patientName: user.name,
+        patientLastname: user.patientLastname,
+        dni: user.dni,
+        birthdate: user.birthdate,
+        planId: user.planId,
+      });
+    }
+  }, [user]);
+
+  const hasPermissionToView = () => {
+    return (
+      (id === userId)
+    );
+  };
+
+  if (!hasPermissionToView()) {
+    return (
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-md shadow-md mt-8 my-3">
+        <p className="text-red-500 text-2xl font-semibold">
+          Error al encontrar el perfil
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto bg-white p-8 rounded-md shadow-md my-8">
+      <ToastContainer/>
       <h2 className="text-3xl font-bold mb-4 text-blue-500">User Profile</h2>
-      <div className="mb-4">
-        <p className="text-gray-700">
-          <span className="font-bold">Name: </span>
+      <div className="mb-4 space-y-2">
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">Name:</label>
           {isEditing ? (
             <input
               type="text"
               name="name"
-              value={user.name}
+              value={editedUser.name}
               onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
             />
           ) : (
-            user.name
+            <div className="w-2/3">{editedUser.name}</div>
           )}
-        </p>
-        <p className="text-gray-700">
-          <span className="font-bold">Lastname: </span>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">Lastname:</label>
           {isEditing ? (
             <input
               type="text"
               name="patientLastname"
-              value={user.patientLastname}
+              value={editedPatient.patientLastname}
               onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
             />
           ) : (
-            user.patientLastname
+            <div className="w-2/3">
+              {editedPatient.patientLastname}
+            </div>
           )}
-        </p>
-        <p className="text-gray-700">
-          <span className="font-bold">ID: </span>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">ID:</label>
           {isEditing ? (
             <input
               type="number"
               name="dni"
-              value={user.dni}
+              value={editedPatient.dni}
               onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
             />
           ) : (
-            user.dni
+            <div className="w-2/3">{editedPatient.dni}</div>
           )}
-        </p>
-        <p className="text-gray-700">
-          <span className="font-bold">Birthdate: </span>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">Birthdate:</label>
           {isEditing ? (
             <input
               type="date"
               name="birthdate"
-              value={new Date(user.birthdate).toISOString().split("T")[0]}
+              value={
+                new Date(editedPatient.birthdate).toISOString().split("T")[0]
+              }
               onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
             />
           ) : (
-            new Date(user.birthdate).toLocaleDateString()
+            <div className="w-2/3">
+              {new Date(editedPatient.birthdate).toLocaleDateString()}
+            </div>
           )}
-        </p>
-        <p className="text-gray-700">
-          <span className="font-bold">Email: </span>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">Email:</label>
           {isEditing ? (
             <input
               type="email"
               name="email"
-              value={user.email}
+              value={editedUser.email}
               onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
             />
           ) : (
-            user.email
+            <div className="w-2/3">{editedUser.email}</div>
           )}
-        </p>
-        <p className="text-gray-700">
-          <span className="font-bold">Password: </span>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">Password:</label>
           {isEditing ? (
             <input
               type="password"
               name="password"
-              value={user.password}
+              value={editedUser.email}
               onChange={handleInputChange}
+              className="border rounded-lg p-2 w-full"
             />
           ) : (
-            <span className="text-gray-500">password</span>
+            <div className="w-2/3">
+              <span className="text-gray-500">password</span>
+            </div>
           )}
-        </p>
-        <p className="text-gray-700">
-          <span className="font-bold">Health Plan: </span>
+        </div>
+
+        <div className="flex items-center">
+          <label className="w-1/3 text-gray-700 font-bold">Health Plan:</label>
           {isEditing ? (
             <select
               name="planId"
-              value={user.planId}
+              value={editedPatient.planId}
               onChange={handleInputChange}
               className="border rounded-lg p-2 w-full"
             >
@@ -215,10 +236,11 @@ export const Profile = () => {
               ))}
             </select>
           ) : (
-            user.type
+            <div className="w-2/3">{user.type}</div>
           )}
-        </p>
+        </div>
       </div>
+
       <div className="flex justify-end">
         {isEditing ? (
           <>
