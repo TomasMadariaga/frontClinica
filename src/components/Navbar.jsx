@@ -4,6 +4,7 @@ import logo from "../assets/icon3.webp";
 export const Navbar = ({ user, handleLogout }) => {
   const storedRole = localStorage.getItem("role");
   const storedToken = localStorage.getItem("token");
+  const storedId = localStorage.getItem("id");
 
   const isAdmin =
     (user && user.role === "admin") ||
@@ -58,7 +59,7 @@ export const Navbar = ({ user, handleLogout }) => {
           {storedToken ? (
             <button
               onClick={handleLogout}
-              className="font-sans font-medium text-slate-100 text-xl hover:text-black"
+              className="font-sans font-medium text-slate-100 text-xl hover:text-slate-300"
             >
               Log Out
             </button>
@@ -71,13 +72,16 @@ export const Navbar = ({ user, handleLogout }) => {
             </Link>
           )}
         </li>
-        <li className="py-2.5 font-sans font-medium text-slate-100 px-4 text-xl">
+        <Link
+          className="py-2.5 font-sans font-medium text-slate-100 px-4 text-xl hover:text-slate-300"
+          to={`/profile/${storedId}`}
+        >
           {user && user.name
             ? user.name
             : localStorage.getItem("name")
             ? localStorage.getItem("name")
             : false}
-        </li>
+        </Link>
       </ul>
     </nav>
   );
