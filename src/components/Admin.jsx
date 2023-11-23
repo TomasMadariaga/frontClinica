@@ -284,7 +284,6 @@ export const Admin = () => {
     try {
       const priceAsNumber = parseInt(plan.price);
 
-      // Crea un nuevo objeto con 'price' como número
       const updatedPlanData = {
         type: plan.type,
         price: priceAsNumber,

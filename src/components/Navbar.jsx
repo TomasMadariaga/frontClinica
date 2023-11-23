@@ -4,6 +4,7 @@ import logo from "../assets/icon3.webp";
 export const Navbar = ({ user, handleLogout }) => {
   const storedRole = localStorage.getItem("role");
   const storedToken = localStorage.getItem("token");
+  const storedId = localStorage.getItem("id");
 
   const isAdmin =
     (user && user.role === "admin") ||
@@ -22,66 +23,65 @@ export const Navbar = ({ user, handleLogout }) => {
         <img src={logo} alt="Logo clínica" className="h-9 w-9" />
       </Link>
       <ul className="w-11/12 flex list-none justify-end m-0 p-0 items-center">
-        <li className="py-2.5 font-sans font-medium text-slate-100 text-xl px-2">
-          {user && user.name
-            ? user.name
-            : localStorage.getItem("name")
-            ? localStorage.getItem("name")
-            : false}
-        </li>
         {isAdmin && (
-          <li className="py-2.5">
+          <li className="py-2.5 pr-4">
             <Link
               to="/admin"
-              className="bg-red-600 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-red-500"
+              className="bg-red-600 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-red-500"
             >
               Admin
             </Link>
           </li>
         )}
         {isMedic && (
-          <li className="py-2.5">
+          <li className="py-2.5 pr-4">
             <Link
               to="/medic"
-              className="bg-sky-700 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
+              className="bg-sky-700 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
             >
               Medic
             </Link>
           </li>
         )}
         {isPatient && (
-          <li className="py-2.5">
-            <Link
-              to="/patient"
-              className="bg-sky-700 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
-            >
-              Take shift
-            </Link>
-            <Link
-              to="/medical-list"
-              className="bg-sky-700 mx-3 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
-            >
-              Medical List
-            </Link>
+          <li className="py-2.5 pr-4">
+            <span className="border-r border-slate-500 pr-4">
+              <Link
+                to="/patient"
+                className="bg-sky-700 font-sans rounded-xl font-medium text-white text-xl px-3 py-1 hover:bg-sky-800"
+              >
+                Take shift
+              </Link>
+            </span>
           </li>
         )}
-        <li className="py-2.5">
+        <li className="py-2.5 px-4">
           {storedToken ? (
             <button
               onClick={handleLogout}
-              className="font-sans font-medium text-slate-100 text-xl px-3 hover:text-black"
+              className="font-sans font-medium text-slate-100 text-xl hover:text-slate-300"
             >
               Log Out
             </button>
           ) : (
             <Link
               to="/auth/login"
-              className="font-sans font-medium text-slate-100 text-xl px-3 hover:text-indigo-500"
+              className="font-sans font-medium text-slate-100 text-xl hover:text-indigo-500"
             >
               Sign In
             </Link>
           )}
         </li>
+        <Link
+          className="py-2.5 font-sans font-medium text-slate-100 px-4 text-xl hover:text-slate-300"
+          to={`/profile/${storedId}`}
+        >
+          {user && user.name
+            ? user.name
+            : localStorage.getItem("name")
+            ? localStorage.getItem("name")
+            : false}
+        </Link>
       </ul>
     </nav>
   );
