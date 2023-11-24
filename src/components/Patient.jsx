@@ -7,6 +7,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Patient = () => {
+  document.title = "Shift";
+
   const [medics, setMedics] = useState([]);
   const [medicStartTime, setMedicStartTime] = useState("");
   const [medicEndTime, setMedicEndTime] = useState("");
@@ -18,7 +20,7 @@ export const Patient = () => {
 
   const IdUser = localStorage.getItem("id");
   const userId = parseInt(IdUser);
-  console.log(userId)
+  console.log(userId);
 
   const handleCreateTurn = async (e) => {
     e.preventDefault();
@@ -166,7 +168,7 @@ export const Patient = () => {
           </button>
         </form>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

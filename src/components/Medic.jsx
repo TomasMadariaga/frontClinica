@@ -59,6 +59,7 @@ export const Medic = () => {
   };
 
   useEffect(() => {
+    document.title = "Medic"
     axios
       .get(`http://localhost:3000/turnos/user-id/${id}`)
       .then((response) => {
@@ -71,6 +72,7 @@ export const Medic = () => {
   }, []);
 
   useEffect(() => {
+    document.title = "Medic"
     axios
       .get(`http://localhost:3000/medicos/${id}`)
       .then((response) => {
