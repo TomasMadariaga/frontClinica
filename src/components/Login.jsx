@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = ({ handleLogin }) => {
+  document.title = "Login"
   const { dispatch } = useAuth();
   const [formData, setFormData] = useState({
     email: "",

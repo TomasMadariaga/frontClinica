@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const Patient = () => {
+  document.title = "Shift"
   const [medics, setMedics] = useState([]);
   const [medicStartTime, setMedicStartTime] = useState("");
   const [medicEndTime, setMedicEndTime] = useState("");

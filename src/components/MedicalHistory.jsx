@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const ClinicalHistory = () => {
+  document.title = "Medical History"
   const { id } = useParams();
   const userId = localStorage.getItem("id");
   const {

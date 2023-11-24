@@ -1,10 +1,10 @@
-import React from "react";
 import horariosHospitalImage from "../images/horarios-hospital.jpg";
 import horariosInternadoImage from "../images/horarios-internado.jpg";
 import horariosLaboratoriosImage from "../images/horarios-laboratorios.jpg";
 import horariosVacunatoriosImage from "../images/horarios-vacunatorios.jpg";
 
 const Visits = () => {
+  document.title = "Visits"
   return (
     <div className="mx-auto w-2/4 p-6 bg-white m-3 rounded-md shadow-md">
       <h2 className="text-3xl text-center mb-6 font-bold text-teal-600">

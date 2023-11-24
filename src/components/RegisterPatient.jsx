@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate} from "react-router-dom";
 
 const RegisterPatient = () => {
+  document.title = "Register"
   const [formData, setFormData] = useState({
     name: "",
     email: "",

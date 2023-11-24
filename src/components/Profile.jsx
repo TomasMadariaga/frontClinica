@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 
 export const Profile = () => {
+  document.title = "Profile";
   const {
     state: { role },
   } = useAuth();
@@ -34,53 +35,68 @@ export const Profile = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    setEditedUser((prevEditedUser) => ({
-      ...prevEditedUser,
-      [name]: value,
-    }));
-
-    if (role === "patient") {
+    if (name in editedPatient) {
       setEditedPatient((prevEditedPatient) => ({
         ...prevEditedPatient,
         [name]: value,
       }));
-    } else if (role === "medic") {
+    } else if (name in editedUser) {
+      setEditedUser((prevEditedUser) => ({
+        ...prevEditedUser,
+        [name]: value,
+      }));
+    } else if (name in editedMedic) {
       setEditedMedic((prevEditedMedic) => ({
         ...prevEditedMedic,
         [name]: value,
-      }));
+      }))
     }
   };
 
   const handleSaveClick = async () => {
     try {
-      const birthdateString = editedPatient.birthdate ?? "";
-      const birthdate = new Date(birthdateString.split("T")[0]);
-      const birthdateISO = birthdate.toISOString().split("T")[0];
-      const numberDni = parseInt(editedPatient.dni);
-      const numberPlanId = parseInt(editedPatient.planId);
+      if (role === "medic") {
+        const medicName = editedUser.name;
+        editedMedic.medicName = medicName;
+        await axios.put(
+          `http://localhost:3000/auth/${userId}`,
+          editedUser
+        );
 
-      editedPatient.planId = numberPlanId;
-      editedPatient.dni = numberDni;
-      editedPatient.birthdate = birthdateISO;
+        await axios.put(
+          `http://localhost:3000/medicos/${userMedic.medicId}`,
+          editedMedic
+        );
+        toast.success("Datos cambiados con exito");
+        setIsEditing(false);
+        localStorage.setItem("name", editedUser.name);
+      } else if (role === "patient") {
+        const birthdateString = editedPatient.birthdate ?? "";
+        const birthdate = new Date(birthdateString.split("T")[0]);
+        const birthdateISO = birthdate.toISOString().split("T")[0];
+        const numberDni = parseInt(editedPatient.dni);
+        const numberPlanId = parseInt(editedPatient.planId);
 
-      const responseUser = await axios.put(
-        `http://localhost:3000/auth/${userId}`,
-        editedUser
-      );
+        editedPatient.planId = numberPlanId;
+        editedPatient.dni = numberDni;
+        editedPatient.birthdate = birthdateISO;
+        const patientName = editedUser.name;
+        editedPatient.patientName = patientName;
+        await axios.put(
+          `http://localhost:3000/auth/${userId}`,
+          editedUser
+        );
 
-      const patientName = editedUser.name;
-      editedPatient.patientName = patientName;
-      const responsePatient = await axios.put(
-        `http://localhost:3000/pacientes/${user.patientId}`,
-        editedPatient
-      );
-      toast.success("Datos cambiados con exito");
-      setIsEditing(false);
-      localStorage.setItem("name", editedUser.name);
+        await axios.put(
+          `http://localhost:3000/pacientes/${user.patientId}`,
+          editedPatient
+        );
+        toast.success("Datos cambiados con exito");
+        setIsEditing(false);
+        localStorage.setItem("name", editedUser.name);
+      }
     } catch (error) {
       toast.error("Error al cambiar los datos");
-      console.log(userMedic);
     }
   };
 
@@ -98,26 +114,33 @@ export const Profile = () => {
 
   useEffect(() => {
     if (user || userMedic) {
-      setEditedUser({
-        name: user.name,
-        email: user.email,
-        password: user.password,
-      });
-
-      setEditedPatient({
-        patientName: user.name,
-        patientLastname: user.patientLastname,
-        dni: user.dni,
-        birthdate: user.birthdate,
-        planId: user.planId,
-      });
-
-      setEditedMedic({
-        medicName: userMedic.name,
-        medicLastname: userMedic.medicLastname,
-      });
+      if (role === "patient") {
+        setEditedUser({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+        });
+  
+        setEditedPatient({
+          patientLastname: user.patientLastname,
+          dni: user.dni,
+          birthdate: user.birthdate,
+          planId: user.planId,
+        });
+      } else if (role === "medic" && userMedic) { 
+        setEditedUser({
+          name: userMedic.name,
+          email: userMedic.email,
+          password: userMedic.password,
+        });
+  
+        setEditedMedic({
+          medicName: userMedic.medicName,
+          medicLastname: userMedic.medicLastname,
+        });
+      }
     }
-  }, [user]);
+  }, [user, userMedic]);
 
   const hasPermissionToView = () => {
     return id === userId;
@@ -160,13 +183,13 @@ export const Profile = () => {
             {isEditing ? (
               <input
                 type="text"
-                name="medicName"
-                value={editedMedic.medicName}
+                name="name"
+                value={editedUser.name}
                 onChange={handleInputChange}
                 className="border rounded-lg p-2 w-full"
               />
             ) : (
-              <div className="w-2/3">{editedMedic.medicName}</div>
+              <div className="w-2/3">{editedUser.name}</div>
             )}
           </div>
         )}
@@ -261,12 +284,12 @@ export const Profile = () => {
               <input
                 type="email"
                 name="email"
-                value={editedMedic.email}
+                value={editedUser.email}
                 onChange={handleInputChange}
                 className="border rounded-lg p-2 w-full"
               />
             ) : (
-              <div className="w-2/3">{editedMedic.email}</div>
+              <div className="w-2/3">{editedUser.email}</div>
             )}
           </div>
         )}
