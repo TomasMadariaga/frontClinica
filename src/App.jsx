@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Register from "./components/RegisterPatient";
 import Login from "./components/Login";
 import { Navbar } from "./components/Navbar";
@@ -43,7 +43,10 @@ function App() {
         <Navbar user={user} handleLogout={handleLogout} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/auth/register/patient" element={<Register />} />
+          <Route
+            path="/auth/register/patient"
+            element={<Register title="register" />}
+          />
           <Route
             path="/auth/login"
             element={<Login handleLogin={handleLogin} />}

@@ -1,6 +1,6 @@
-import React from "react";
-
 const PrivacyPolicy = () => {
+  document.title = "Privacy Policy";
+
   return (
     <div className="mx-auto w-1/2 p-6 bg-white m-3 rounded-md shadow-md">
       <h2 className="text-3xl text-center mb-6 text-teal-600 font-semibold">

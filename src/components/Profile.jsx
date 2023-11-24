@@ -5,13 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
 
 export const Profile = () => {
+  document.title = "Profile"
   const {
     state: { role },
   } = useAuth();
   const { id } = useParams();
   const userId = localStorage.getItem("id");
   const [user, setUser] = useState("");
-  const [userMedic, setUserMedic] = useState("");
+  // const [userMedic, setUserMedic] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [plans, setPlans] = useState("");
   const [editedUser, setEditedUser] = useState({
@@ -26,27 +27,22 @@ export const Profile = () => {
     birthdate: "",
     planId: "",
   });
-  const [editedMedic, setEditedMedic] = useState({
-    medicName: "",
-    medicLastname: "",
-  });
+  // const [editedMedic, setEditedMedic] = useState({
+  //   medicName: "",
+  //   medicLastname: "",
+  // });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    setEditedUser((prevEditedUser) => ({
-      ...prevEditedUser,
-      [name]: value,
-    }));
-
-    if (role === "patient") {
+    if (name in editedPatient) {
       setEditedPatient((prevEditedPatient) => ({
         ...prevEditedPatient,
         [name]: value,
       }));
-    } else if (role === "medic") {
-      setEditedMedic((prevEditedMedic) => ({
-        ...prevEditedMedic,
+    } else if (name in editedUser) {
+      setEditedUser((prevEditedUser) => ({
+        ...prevEditedUser,
         [name]: value,
       }));
     }
@@ -80,7 +76,6 @@ export const Profile = () => {
       localStorage.setItem("name", editedUser.name);
     } catch (error) {
       toast.error("Error al cambiar los datos");
-      console.log(userMedic);
     }
   };
 
@@ -91,13 +86,14 @@ export const Profile = () => {
       axios.get("http://localhost:3000/planes").then((response) => {
         setPlans(response.data);
       });
-    axios.get(`http://localhost:3000/auth/userMedic/${id}`).then((response) => {
-      setUserMedic(response.data[0]);
-    });
+      
+    // axios.get(`http://localhost:3000/auth/userMedic/${id}`).then((response) => {
+    //   setUserMedic(response.data[0]);
+    // });
   }, []);
 
   useEffect(() => {
-    if (user || userMedic) {
+    if (user) {
       setEditedUser({
         name: user.name,
         email: user.email,
@@ -112,10 +108,10 @@ export const Profile = () => {
         planId: user.planId,
       });
 
-      setEditedMedic({
-        medicName: userMedic.name,
-        medicLastname: userMedic.medicLastname,
-      });
+      // setEditedMedic({
+      //   medicName: userMedic.name,
+      //   medicLastname: userMedic.medicLastname,
+      // });
     }
   }, [user]);
 
@@ -154,7 +150,7 @@ export const Profile = () => {
             )}
           </div>
         )}
-        {role === "medic" && (
+        {/* {role === "medic" && (
           <div className="flex items-center">
             <label className="w-1/3 text-gray-700 font-bold">Name:</label>
             {isEditing ? (
@@ -169,7 +165,7 @@ export const Profile = () => {
               <div className="w-2/3">{editedMedic.medicName}</div>
             )}
           </div>
-        )}
+        )} */}
         {role === "patient" && (
           <div className="flex items-center">
             <label className="w-1/3 text-gray-700 font-bold">Lastname:</label>
@@ -186,7 +182,7 @@ export const Profile = () => {
             )}
           </div>
         )}
-        {role === "medic" && (
+        {/* {role === "medic" && (
           <div className="flex items-center">
             <label className="w-1/3 text-gray-700 font-bold">Lastname:</label>
             {isEditing ? (
@@ -201,7 +197,7 @@ export const Profile = () => {
               <div className="w-2/3">{editedMedic.medicLastname}</div>
             )}
           </div>
-        )}
+        )} */}
         {role === "patient" && (
           <div className="flex items-center">
             <label className="w-1/3 text-gray-700 font-bold">ID:</label>
@@ -254,7 +250,7 @@ export const Profile = () => {
             )}
           </div>
         )}
-        {role === "medic" && (
+        {/* {role === "medic" && (
           <div className="flex items-center">
             <label className="w-1/3 text-gray-700 font-bold">Email:</label>
             {isEditing ? (
@@ -269,7 +265,7 @@ export const Profile = () => {
               <div className="w-2/3">{editedMedic.email}</div>
             )}
           </div>
-        )}
+        )} */}
         <div className="flex items-center">
           <label className="w-1/3 text-gray-700 font-bold">Password:</label>
           {isEditing ? (

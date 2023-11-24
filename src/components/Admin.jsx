@@ -5,8 +5,8 @@ import Login from "./Login";
 import { DateTime } from "luxon";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css';
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 export const Admin = () => {
   const { state } = useAuth();
@@ -30,6 +30,7 @@ export const Admin = () => {
   const [historias, setHistorias] = useState([]);
   const [medicalArticle, setMedicalArticle] = useState([]);
 
+  document.title = "Admin";
   useEffect(() => {
     axios
       .get("http://localhost:3000/auth/users")
@@ -221,8 +222,8 @@ export const Admin = () => {
   };
 
   const handleWorkingDayChange = (event) => {
-    const selectedDay = Number(event.target.value); 
-    const updatedWorkingDays = [...formDataMedic.workingDays]; 
+    const selectedDay = Number(event.target.value);
+    const updatedWorkingDays = [...formDataMedic.workingDays];
 
     if (event.target.checked) {
       updatedWorkingDays.push(selectedDay);
@@ -243,9 +244,9 @@ export const Admin = () => {
         `http://localhost:3000/articles/${id}`,
         articleData
       );
-      toast.success("Articulo medico editado correctamente")
+      toast.success("Articulo medico editado correctamente");
     } catch (error) {
-      toast.success("Error al editar el articulo")
+      toast.success("Error al editar el articulo");
     }
   };
 
@@ -273,10 +274,10 @@ export const Admin = () => {
       .put(`http://localhost:3000/auth/${user.id}`, userData)
       .then((response) => {
         console.log(response.data);
-        toast.success("Usuario editado correctamente")
+        toast.success("Usuario editado correctamente");
       })
       .catch((error) => {
-        toast.error("Error al editar el usuario")
+        toast.error("Error al editar el usuario");
       });
   };
 
@@ -296,9 +297,9 @@ export const Admin = () => {
       );
 
       console.log(response.data);
-      toast.success("Plan editado correctamente")
+      toast.success("Plan editado correctamente");
     } catch (error) {
-      toast.error("Error al editar el plan")
+      toast.error("Error al editar el plan");
     }
   };
 
@@ -321,116 +322,145 @@ export const Admin = () => {
 
       setIsCreatingPlan(false);
       setNewPlan({ type: "", price: "" });
-      toast.success("Plan creado")
+      toast.success("Plan creado");
     } catch (error) {
-      toast.error("Error al crear el plan")
+      toast.error("Error al crear el plan");
     }
   };
 
   const deleteUser = async (userId) => {
-    confirmAlert({title: 'Confirmar para borrar', message:"Estas seguro de borrar el usuario?", buttons: [
-      {
-        label: "Yes",
-        onClick: async () => {try {
-          await axios.delete(`http://localhost:3000/auth/${userId}`);
-          const updatedUsers = users.filter((user) => user.id !== userId);
-          setUsers(updatedUsers);
-          toast.info("Usuario eliminado")
-        } catch (error) {
-          toast.error("Error al eliminar el usuario")
-        }}
-      },
-      {
-        label: "No"
-      }
-    ]})
-    
+    confirmAlert({
+      title: "Confirmar para borrar",
+      message: "Estas seguro de borrar el usuario?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              await axios.delete(`http://localhost:3000/auth/${userId}`);
+              const updatedUsers = users.filter((user) => user.id !== userId);
+              setUsers(updatedUsers);
+              toast.info("Usuario eliminado");
+            } catch (error) {
+              toast.error("Error al eliminar el usuario");
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   const deletePlan = async (planId) => {
-    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar el plan?", buttons: [
-      {
-        label: "Yes",
-        onClick: async () => {try {
-          await axios.delete(`http://localhost:3000/planes/${planId}`);
-          const updatedPlanes = plans.filter((plan) => plan.id !== planId);
-          setPlans(updatedPlanes);
-          toast.info("Plan eliminado")
-        } catch (error) {
-          toast.error("Error al eliminar el plan")
-        }}
-      },
-      {
-        label: "No"
-      }
-    ]})
-    
+    confirmAlert({
+      title: "Confirmar para borrar",
+      message: "Estas seguro de borrar el plan?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              await axios.delete(`http://localhost:3000/planes/${planId}`);
+              const updatedPlanes = plans.filter((plan) => plan.id !== planId);
+              setPlans(updatedPlanes);
+              toast.info("Plan eliminado");
+            } catch (error) {
+              toast.error("Error al eliminar el plan");
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   const deleteShift = async (shiftId) => {
-    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar el turno medico?", buttons: [
-      {
-        label: "Yes",
-        onClick: async () => {try {
-          await axios.delete(`http://localhost:3000/turnos/${shiftId}`);
-          const updatedShifts = turnos.filter((shift) => shift.id !== shiftId);
-          setTurnos(updatedShifts);
-          toast.info("Turno medico eliminado")
-        } catch (error) {
-          toast.error("Error al eliminar el turno medico")
-        }}
-      },
-      {
-        label: "No"
-      }
-    ]})
-    
+    confirmAlert({
+      title: "Confirmar para borrar",
+      message: "Estas seguro de borrar el turno medico?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              await axios.delete(`http://localhost:3000/turnos/${shiftId}`);
+              const updatedShifts = turnos.filter(
+                (shift) => shift.id !== shiftId
+              );
+              setTurnos(updatedShifts);
+              toast.info("Turno medico eliminado");
+            } catch (error) {
+              toast.error("Error al eliminar el turno medico");
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   const deleteHistoriaClinica = async (historiaId) => {
-    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar la historia clinica?", buttons: [
-      {
-        label: "Yes",
-        onClick: async () => {try {
-          await axios.delete(`http://localhost:3000/historias/${historiaId}`);
-    
-          const updatedHistoria = historias.filter(
-            (historia) => historia.id !== historiaId
-          );
-          setHistorias(updatedHistoria);
-          toast.info("Historia clinica eliminada")
-        } catch (error) {
-          toast.error("Error al eliminar la historia clinica")
-        }}
-      },
-      {
-        label: "No"
-      }
-    ]})
-    
+    confirmAlert({
+      title: "Confirmar para borrar",
+      message: "Estas seguro de borrar la historia clinica?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              await axios.delete(
+                `http://localhost:3000/historias/${historiaId}`
+              );
+
+              const updatedHistoria = historias.filter(
+                (historia) => historia.id !== historiaId
+              );
+              setHistorias(updatedHistoria);
+              toast.info("Historia clinica eliminada");
+            } catch (error) {
+              toast.error("Error al eliminar la historia clinica");
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   const deleteArticle = async (articleId) => {
-    confirmAlert({title: "Confirmar para borrar", message: "Estas seguro de borrar el articulo medico?", buttons: [
-      {
-        label: "Yes",
-        onClick: async () => {try {
-          await axios.delete(`http://localhost:3000/articles/${articleId}`);
-    
-          const updatedArticle = medicalArticle.filter(
-            (medicalArticle) => medicalArticle.id !== articleId
-          );
-          setMedicalArticle(updatedArticle);
-          toast.info("Articulo medico eliminado")
-        } catch (error) {
-          toast.error("Error al eliminar el articulo medico")
-        }}
-      },
-      {
-        label: "No"
-      }
-    ]})
-    
+    confirmAlert({
+      title: "Confirmar para borrar",
+      message: "Estas seguro de borrar el articulo medico?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: async () => {
+            try {
+              await axios.delete(`http://localhost:3000/articles/${articleId}`);
+
+              const updatedArticle = medicalArticle.filter(
+                (medicalArticle) => medicalArticle.id !== articleId
+              );
+              setMedicalArticle(updatedArticle);
+              toast.info("Articulo medico eliminado");
+            } catch (error) {
+              toast.error("Error al eliminar el articulo medico");
+            }
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
   };
 
   const handleStartTimeChange = (event) => {
@@ -456,9 +486,9 @@ export const Admin = () => {
         "http://localhost:3000/auth/register/medic",
         formDataMedic
       );
-      toast.success("Medico registrado exitosamente")
+      toast.success("Medico registrado exitosamente");
     } catch (error) {
-      toast.error("Error al registrar al medico")
+      toast.error("Error al registrar al medico");
     }
   };
 
@@ -469,9 +499,9 @@ export const Admin = () => {
         "http://localhost:3000/auth/register/admin",
         formDataAdmin
       );
-      toast.success("Admin registrado correctamente")
+      toast.success("Admin registrado correctamente");
     } catch (error) {
-      toast.error("Error al registrar el admin")
+      toast.error("Error al registrar el admin");
     }
   };
 
@@ -552,7 +582,7 @@ export const Admin = () => {
           </ul>
         </nav>
         <div className="p-4 w-full">
-          <ToastContainer/>
+          <ToastContainer />
           {showUsers && (
             <div className="bg-gray-700 px-4 py-2 border rounded-lg">
               <h2 className="font-sans font-bold text-white text-center py-4">
