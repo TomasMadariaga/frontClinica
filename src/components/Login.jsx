@@ -34,7 +34,6 @@ const Login = ({ handleLogin }) => {
         "http://localhost:3000/auth/login",
         formData
       );
-      console.log(response.data);
       const token = response.data.token;
       const role = response.data.role;
       const name = response.data.name;
