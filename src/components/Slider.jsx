@@ -1,37 +1,28 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useState } from "react";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import { RxDotFilled } from "react-icons/rx";
 
 function Slider() {
-  const slides = [
-    {
-      url: "https://blogs.iadb.org/salud/wp-content/uploads/sites/15/2020/08/SPH_Newsletters_Blogs_AUG10_GS-POST.png",
-    },
-    {
-      url: "https://cdn.aarp.net/content/dam/aarp/health/conditions_treatments/2020/04/1140-emergency-room-esp.jpg",
-    },
-    {
-      url: "https://intef.es/wp-content/uploads/2021/12/32_RED_RRSS_Día-Mundial-de-la-Salud.jpg",
-    },
-
-    {
-      url: "https://blogs.iadb.org/salud/wp-content/uploads/sites/15/2020/05/SPH_Blog-04-18-2020_PP-POST_PP-POST_PP-POST-copia-2.png",
-    },
-    {
-      url: "https://png.pngtree.com/background/20220726/original/pngtree-hospital-building-for-healthcare-cartoon-background-vector-illustration-with-picture-image_1806881.jpg",
-    },
-  ];
-
+  const [articles, setArticles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/articles")
+      .then((response) => setArticles(response.data))
+      .catch((error) => console.error("Error fetching articles:", error));
+  }, []);
 
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
+    const newIndex = isFirstSlide ? articles.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === slides.length - 1;
+    const isLastSlide = currentIndex === articles.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
@@ -41,44 +32,56 @@ function Slider() {
   };
 
   return (
-    <div className="mx-auto mx-w-7xl bg-white px-4 pt-12 sm:px-6 lg:px-8">
-      <h2 className="text-center font-bold text-slate-850 text-teal-600 bg-slate-50 sm:text-5xl sm:leading-tight sm:tracking-tight">
+    <div className="mx-auto mx-w-7xl px-4 pt-12 sm:px-6 lg:px-8">
+      <h2 className="text-center font-bold text-slate-850 text-teal-600 bg-gray-100 sm:text-5xl sm:leading-tight sm:tracking-tight">
         Clinica Online
       </h2>
-      {/*<div className="mx-auto mx-w-7xl bg-white px-4 pt-12 sm:px-6 lg:px-8">
-        <h1 className="text-center font-bold">About us</h1>
-        <p className="text-justify font-semibold mx-64">
-          Bienvenidos a [Nombre del Hospital], donde su salud y bienestar son
-          nuestras principales prioridades. En [Nombre del Hospital], hemos
-          estado dedicados a proporcionar servicios de atención médica de alta
-          calidad a nuestra comunidad durante [número de años] años.
-        </p>
-        <h1 className="text-center font-bold pt-4">Our mission</h1>
-        <p className="text-center font-semibold mx-64">
-          Es brindar atención médica compasiva y de vanguardia a nuestros
-          pacientes, garantizando su comodidad y recuperación. Estamos
-          comprometidos en promover una comunidad más saludable y feliz.
-        </p>
-  </div>*/}
-      <div className="h-[780px] w-full m-auto py-16 px-4 relative group">
-        <div
-          style={{ backgroundImage: `url(${slides[currentIndex].url})` }}
-          className="w-full h-full rounded-2xl bg-center bg-cover duration-500"
-        ></div>
+      <div className="h-[500px] w-full max-w-screen-2xl mx-auto relative group pt-12">
+        {articles.length > 0 && (
+          <div
+            style={{
+              backgroundImage: `url(${articles[currentIndex].imageUrl})`,
+              backgroundPosition: "center top",
+            }}
+            className="w-full h-full rounded-2xl bg-cover duration-500 relative"
+          >
+            {/* Contenido del artículo sobre la imagen */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white">
+              <h3
+                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-4xl font-bold rounded-md p-4"
+                style={{
+                  backdropFilter: "blur(7px) brightness(0.8)",
+                }}
+              >
+                {articles[currentIndex].title}
+              </h3>
+              <p
+                className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-xl mt-24 font-semibold rounded-md p-4"
+                style={{
+                  backdropFilter: "blur(7px) brightness(0.8)",
+                }}
+              >
+                {articles[currentIndex].content}
+              </p>
+            </div>
+          </div>
+        )}
         {/* Left Arrow */}
-        <div className="hidden group-hover:block absolute top-1/2 -translate-x-0 translate-y--1/2 left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
-          <BsChevronCompactLeft onClick={prevSlide} size={30} />
+        <div className="hidden group-hover:block absolute top-1/2 -translate-x-0 translate-y--1/2 left-3 text-lg rounded-full p-2 bg-black/20 text-white cursor-pointer">
+          <BsChevronCompactLeft onClick={prevSlide} size={24} />
         </div>
         {/* Right Arrow */}
-        <div className="hidden group-hover:block absolute top-1/2 -translate-x-0 translate-y--1/2 right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
-          <BsChevronCompactRight onClick={nextSlide} size={30} />
+        <div className="hidden group-hover:block absolute top-1/2 -translate-x-0 translate-y--1/2 right-3 text-lg rounded-full p-2 bg-black/20 text-white cursor-pointer">
+          <BsChevronCompactRight onClick={nextSlide} size={24} />
         </div>
-        <div className="flex top-4 justify-center py-2">
-          {slides.map((slide, slideIndex) => (
+        <div className="flex top-2 justify-center">
+          {articles.map((article, index) => (
             <div
-              key={slideIndex}
-              onClick={() => goToSlide(slideIndex)}
-              className="text-2xl cursor-pointer"
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`text-lg cursor-pointer ${
+                currentIndex === index ? "text-teal-600" : "text-gray-400"
+              }`}
             >
               <RxDotFilled />
             </div>

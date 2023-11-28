@@ -2,8 +2,8 @@ import { infoPlans } from "./CardText";
 
 function Card() {
   return (
-    <div className="mx-auto mx-w-7xl bg-white px-4 pt-12 sm:px-6 lg:px-8">
-      <h2 className="text-center font-bold text-slate-850 text-teal-600 bg-slate-50 sm:text-5xl sm:leading-tight sm:tracking-tight">
+    <div className="mx-auto mx-w-7xl px-4 pt-12 sm:px-6 lg:px-8">
+      <h2 className="text-center font-bold text-slate-850 text-teal-600 bg-gray-100 sm:text-5xl sm:leading-tight sm:tracking-tight">
         Health Plans.
       </h2>
       <div className="mx-auto grid max-w-7xl lg:grid-cols-2 gap-12 lg:gap-8 py-24 px-4 sm:px-6 lg:px-24">

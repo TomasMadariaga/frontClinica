@@ -17,6 +17,7 @@ import TermsAndConditions from "./components/TermsAndConditions";
 import Visits from "./components/Visits";
 import Contact from "./components/Contact";
 import { Profile } from "./components/Profile";
+import Articles from "./components/Articles";
 import { PayPalScriptProvider} from "@paypal/react-paypal-js";
 import { ToastContainer } from "react-toastify";
 import { Shifts } from "./components/Shifts";
@@ -41,6 +42,31 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <Navbar user={user} handleLogout={handleLogout} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth/register/patient" element={<Register />} />
+          <Route
+            path="/auth/login"
+            element={<Login handleLogin={handleLogin} />}
+          />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/medic" element={<Medic />} />
+          <Route path="/patient" element={<Patient />} />
+          <Route path="/historia-clinica/:id" element={<ClinicalHistory />} />
+          <Route path="/medical-list" element={<MedicalList />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route
+            path="/terms-and-conditions"
+            element={<TermsAndConditions />}
+          />
+          <Route path="/hours-of-operation-and-visits" element={<Visits />} />
+          <Route path="/contact" element={<Contact />} />
+
+          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/articles" element={<Articles />} />
+        </Routes>
+        <Footer />
         <PayPalScriptProvider>
           <ToastContainer />
           <Navbar user={user} handleLogout={handleLogout} />

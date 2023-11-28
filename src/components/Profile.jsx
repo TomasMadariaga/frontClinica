@@ -103,6 +103,8 @@ export const Profile = () => {
   useEffect(() => {
     axios.get(`http://localhost:3000/auth/users/${id}`).then((response) => {
       setUser(response.data[0]);
+      console.log(user.patientId)
+      console.log(response.data[0])
     }),
       axios.get("http://localhost:3000/planes").then((response) => {
         setPlans(response.data);

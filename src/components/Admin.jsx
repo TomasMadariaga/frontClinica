@@ -5,6 +5,7 @@ import Login from "./Login";
 import { DateTime } from "luxon";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { confirmAlert } from "react-confirm-alert"; // Import
 import { confirmAlert } from "react-confirm-alert"; 
 import "react-confirm-alert/src/react-confirm-alert.css";
 
@@ -29,6 +30,27 @@ export const Admin = () => {
   const [turnos, setTurnos] = useState([]);
   const [historias, setHistorias] = useState([]);
   const [medicalArticle, setMedicalArticle] = useState([]);
+  const [newArticle, setNewArticle] = useState({
+    title: "",
+    content: "",
+    imageUrl: "",
+  });
+
+  const handleAddArticle = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/articles",
+        newArticle
+      );
+      setMedicalArticle([...medicalArticle, response.data]);
+      setNewArticle({ title: "", content: "", imageUrl: "" });
+      toast.success("Artículo médico creado exitosamente");
+    } catch (error) {
+      toast.error("Error al crear el artículo médico");
+    }
+  };
 
   document.title = "Admin";
   useEffect(() => {
@@ -1077,19 +1099,20 @@ export const Admin = () => {
             </div>
           )}
           {showMedicalArticle && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               {medicalArticle.map((article, index) => (
                 <div
                   key={article.id}
                   className="bg-white rounded-xl shadow-2xl overflow-hidden my-4 md:my-0"
+                  style={{ width: "400px" }}
                 >
                   <img
-                    className="h-64 w-full object-cover object-center"
+                    className="h-44 w-full object-cover object-center"
                     src={article.imageUrl}
                     alt="Article Image"
                   />
                   <div className="p-4">
-                    <div className="text-gray-500 text-sm mb-2">
+                    <div className="text-gray-500 text-xs mb-2">
                       {new Date(article.creationDate).toLocaleDateString()}
                     </div>
                     {editArticle === article ? (
@@ -1143,7 +1166,7 @@ export const Admin = () => {
                         <h2 className="text-lg font-medium text-black">
                           {article.title}
                         </h2>
-                        <p className="text-gray-600 line-clamp-3">
+                        <p className="text-gray-600 line-clamp-3 text-sm">
                           {article.content}
                         </p>
                       </div>
@@ -1167,10 +1190,78 @@ export const Admin = () => {
                   </div>
                 </div>
               ))}
+              <div className="bg-white rounded-xl shadow-2xl overflow-hidden my-4 md:my-0">
+                <div className="p-4">
+                  <h2 className="text-lg font-medium text-black mb-2">
+                    Add New Article
+                  </h2>
+                  <form onSubmit={handleAddArticle}>
+                    <label
+                      htmlFor="newTitle"
+                      className="block text-black font-bold"
+                    >
+                      Title:
+                    </label>
+                    <input
+                      type="text"
+                      id="newTitle"
+                      className="mb-2 border border-black rounded-md p-1 w-full"
+                      value={newArticle.title}
+                      onChange={(e) =>
+                        setNewArticle({ ...newArticle, title: e.target.value })
+                      }
+                    />
+
+                    <label
+                      htmlFor="newContent"
+                      className="block text-black font-bold"
+                    >
+                      Content:
+                    </label>
+                    <textarea
+                      id="newContent"
+                      className="mb-2 border border-black rounded-md p-1 w-full"
+                      value={newArticle.content}
+                      onChange={(e) =>
+                        setNewArticle({
+                          ...newArticle,
+                          content: e.target.value,
+                        })
+                      }
+                    />
+
+                    <label
+                      htmlFor="newImageUrl"
+                      className="block text-black font-bold"
+                    >
+                      Image URL:
+                    </label>
+                    <input
+                      type="text"
+                      id="newImageUrl"
+                      className="mb-2 border border-black rounded-md p-1 w-full"
+                      value={newArticle.imageUrl}
+                      onChange={(e) =>
+                        setNewArticle({
+                          ...newArticle,
+                          imageUrl: e.target.value,
+                        })
+                      }
+                    />
+
+                    <div className="flex justify-center">
+                      <button
+                        type="submit"
+                        className="bg-blue-500 text-white font-semibold rounded-lg hover:bg-green-600 h-10 w-20 m-2"
+                      >
+                        Create
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
           )}
-
-          {/* Aquí coloca el contenido principal de tu panel de administración */}
         </div>
       </div>
     );
