@@ -130,7 +130,7 @@ export const Patient = () => {
 
   return (
     <div className="flex items-center justify-center py-5 bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+      <div className="bg-white p-8 rounded-lg shadow-lg justify-items-center flex flex-col">
         <h2 className="text-3xl font-bold mb-4">Crear Turno</h2>
         <form onSubmit={handleCreateTurn} className="max-w-md mx-auto">
           <div className="mb-4">
@@ -186,13 +186,12 @@ export const Patient = () => {
               )}
             </select>
           </div>
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600">
+          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 w-full">
             Crear turno
           </button>
         </form>
-      </div>
-      {showPayment && (
-        <div className="mx-5 bg-white p-4 shadow-lg rounded-md w-3/12">
+        {showPayment && (
+        <div className="bg-white p-4 rounded-md w-full my-2">
           <Payment
             patient={patient}
             plan={plan}
@@ -202,6 +201,9 @@ export const Patient = () => {
           />
         </div>
       )}
+      </div>
+     
+      
       <ToastContainer />
     </div>
   );

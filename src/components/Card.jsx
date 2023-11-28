@@ -30,7 +30,6 @@ function Card() {
                 <span className="ml-1.5">{plan.frequency}</span>
               </p>
             </div>
-            {/* Features */}
             <ul className="mt-6 space-y-4 flex-1">
               {plan.features.map((features) => (
                 <li
