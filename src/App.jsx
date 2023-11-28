@@ -18,6 +18,7 @@ import TermsAndConditions from "./components/TermsAndConditions";
 import Visits from "./components/Visits";
 import Contact from "./components/Contact";
 import { Profile } from "./components/Profile";
+import Articles from "./components/Articles";
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -62,6 +63,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
 
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/articles" element={<Articles />} />
         </Routes>
         <Footer />
       </AuthProvider>

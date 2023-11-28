@@ -7,7 +7,7 @@ function MedicalList() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const doctorsPerPage = 6;
+  const doctorsPerPage = 10;
   const totalPages = Math.ceil(doctors.length / doctorsPerPage);
 
   useEffect(() => {
@@ -42,56 +42,58 @@ function MedicalList() {
   };
 
   return (
-    <div className="mx-auto bg-white px-4 pt-12 sm:px-6 lg:px-8">
-      <h2 className="text-center font-bold text-teal-600 sm:text-5xl sm:leading-tight sm:tracking-tight mb-6">
+    <div className="mx-auto px-4 pt-12 sm:px-6 lg:px-8">
+      <h2 className="text-center font-bold text-teal-600 sm:text-5xl sm:leading-tight sm:tracking-tight mb-6 bg-gray-100">
         Medical List
       </h2>
-      <table className="mx-auto w-full table-auto">
-        <thead>
-          <tr>
-            <th
-              className="border text-white bg-teal-600 border-slate-200 p-2"
-              style={{ width: "50%" }}
-            >
-              Professional
-            </th>
-            <th
-              className="border text-white bg-teal-600 border-slate-200 p-2"
-              style={{ width: "50%" }}
-            >
-              Specialty
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedDoctors.map((doctor) => (
-            <tr key={doctor.id}>
-              <td
-                className="border border-slate-200 p-2 capitalize"
+      <div className="overflow-hidden rounded-lg shadow-md">
+        <table className="mx-auto w-full table-auto bg-white">
+          <thead>
+            <tr>
+              <th
+                className="border text-white bg-teal-600 border-slate-200 p-2"
                 style={{ width: "50%" }}
               >
-                {doctor.medicName} {doctor.medicLastname}
-              </td>
-              <td
-                className="border border-slate-200 p-2 capitalize"
+                Professional
+              </th>
+              <th
+                className="border text-white bg-teal-600 border-slate-200 p-2"
                 style={{ width: "50%" }}
               >
-                {doctor.specialty}
-              </td>
+                Specialty
+              </th>
             </tr>
-          ))}
-          {Array.from(
-            { length: Math.max(0, 6 - displayedDoctors.length) },
-            (_, index) => (
-              <tr key={`empty-${index}`} className="border border-slate-200">
-                <td className="p-2">-</td>
-                <td className="p-2">-</td>
+          </thead>
+          <tbody>
+            {displayedDoctors.map((doctor) => (
+              <tr key={doctor.id}>
+                <td
+                  className="border border-slate-200 p-2 capitalize"
+                  style={{ width: "50%" }}
+                >
+                  {doctor.medicName} {doctor.medicLastname}
+                </td>
+                <td
+                  className="border border-slate-200 p-2 capitalize"
+                  style={{ width: "50%" }}
+                >
+                  {doctor.specialty}
+                </td>
               </tr>
-            )
-          )}
-        </tbody>
-      </table>
-      <div className="mt-4 text-center" style={{ background: "#fff" }}>
+            ))}
+            {Array.from(
+              { length: Math.max(0, 10 - displayedDoctors.length) },
+              (_, index) => (
+                <tr key={`empty-${index}`} className="border border-slate-200">
+                  <td className="p-2">-</td>
+                  <td className="p-2">-</td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 text-center">
         {totalPages > 1 && (
           <div className="mt-4">
             {Array.from({ length: totalPages }, (_, index) => (
