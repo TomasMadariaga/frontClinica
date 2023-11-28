@@ -5,8 +5,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Payment } from "./Payment.jsx";
 
 export const Patient = () => {
+  document.title = "Shift";
+
   const [medics, setMedics] = useState([]);
   const [medicStartTime, setMedicStartTime] = useState("");
   const [medicEndTime, setMedicEndTime] = useState("");
@@ -14,39 +17,49 @@ export const Patient = () => {
   const [time, setTime] = useState("");
   const [medicId, setMedicId] = useState("");
   const [workingDays, setWorkingDays] = useState([]);
+  const [patient, setPatient] = useState("");
+  const [plan, setPlan] = useState([]);
   const [patientsId, setPatientsId] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
 
   const IdUser = localStorage.getItem("id");
   const userId = parseInt(IdUser);
-  console.log(userId)
 
   const handleCreateTurn = async (e) => {
     e.preventDefault();
-    try {
-      const selectedMedic = medics.find(
-        (medic) => medic.id === parseInt(medicId)
-      );
-      const selectedDate = startDate ? new Date(startDate) : new Date();
-      const selectedTime = time ? time : "00:00";
-      const [hours, minutes] = selectedTime.split(":");
-      selectedDate.setHours(parseInt(hours), parseInt(minutes));
 
-      const formattedDate = selectedDate.toISOString();
+    if (patient.paymentStatus === false) {
+      console.log(plan);
+      toast.info("Complete su metodo de pago")
+      setShowPayment(true);
+    } else {
+      try {
+        const selectedMedic = medics.find(
+          (medic) => medic.id === parseInt(medicId)
+        );
+        const selectedDate = startDate ? new Date(startDate) : new Date();
+        const selectedTime = time ? time : "00:00";
+        const [hours, minutes] = selectedTime.split(":");
+        selectedDate.setHours(parseInt(hours), parseInt(minutes));
 
-      const endDate = new Date(selectedDate.getTime() + 3600000);
-      const formattedEndDate = endDate.toISOString();
+        const formattedDate = selectedDate.toISOString();
 
-      const data = {
-        patientId: parseInt(patientsId),
-        medicId: selectedMedic.id,
-        startDate: formattedDate,
-        endDate: formattedEndDate,
-      };
+        const endDate = new Date(selectedDate.getTime() + 3600000);
+        const formattedEndDate = endDate.toISOString();
 
-      const response = await axios.post("http://localhost:3000/turnos", data);
-      toast.success("Turno creado exitosamente!");
-    } catch (error) {
-      toast.error("Hubo un error al crear el turno");
+        const data = {
+          patientId: parseInt(patientsId),
+          medicId: selectedMedic.id,
+          startDate: formattedDate,
+          endDate: formattedEndDate,
+        };
+
+        const response = await axios.post("http://localhost:3000/turnos", data);
+        toast.success("Turno creado exitosamente!");
+      } catch (error) {
+        toast.error("Hubo un error al crear el turno");
+        console.log(error);
+      }
     }
   };
 
@@ -67,6 +80,7 @@ export const Patient = () => {
   };
 
   const handleMedicChange = (e) => {
+    console.log(plan);
     const selectedMedic = medics.find(
       (medic) => medic.id === parseInt(e.target.value)
     );
@@ -95,17 +109,28 @@ export const Patient = () => {
     axios
       .get(`http://localhost:3000/pacientes/usuario/${userId}`)
       .then((response) => {
+        setPatient(response.data);
         setPatientsId(response.data.id);
-        console.log(response.data);
       })
       .catch((error) => {
-        console.error("error al obtener el usuario", error);
+        console.error("Error al obtener al paciente:", error);
       });
   }, []);
 
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/planes/${patient.planId}`)
+      .then((response) => {
+        setPlan(response.data)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [patient]);
+
   return (
     <div className="flex items-center justify-center py-5 bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
+      <div className="bg-white p-8 rounded-lg shadow-lg justify-items-center flex flex-col">
         <h2 className="text-3xl font-bold mb-4">Crear Turno</h2>
         <form onSubmit={handleCreateTurn} className="max-w-md mx-auto">
           <div className="mb-4">
@@ -161,12 +186,25 @@ export const Patient = () => {
               )}
             </select>
           </div>
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600">
+          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 w-full">
             Crear turno
           </button>
         </form>
+        {showPayment && (
+        <div className="bg-white p-4 rounded-md w-full my-2">
+          <Payment
+            patient={patient}
+            plan={plan}
+            onPaymentComplete={(showPaymentStatus) =>
+              setShowPayment(showPaymentStatus)
+            }
+          />
+        </div>
+      )}
       </div>
-      <ToastContainer/>
+     
+      
+      <ToastContainer />
     </div>
   );
 };

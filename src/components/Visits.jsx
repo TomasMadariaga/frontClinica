@@ -1,10 +1,10 @@
-import React from "react";
 import horariosHospitalImage from "../images/horarios-hospital.jpg";
 import horariosInternadoImage from "../images/horarios-internado.jpg";
 import horariosLaboratoriosImage from "../images/horarios-laboratorios.jpg";
 import horariosVacunatoriosImage from "../images/horarios-vacunatorios.jpg";
 
 const Visits = () => {
+  document.title = "Visits";
   return (
     <div className="mx-auto w-2/4 p-6 bg-white m-3 rounded-md shadow-md">
       <h2 className="text-3xl text-center mb-6 font-bold text-teal-600">
@@ -24,7 +24,6 @@ const Visits = () => {
       <h3 className="text-2xl mb-4 text-teal-600 font-semibold">Hospital</h3>
       <hr className="border-t-2 border-gray-300 mb-4" />
 
-      {/* Card 1 - Public Attention */}
       <div className="bg-gray-50 rounded p-6 mb-6 flex flex-col sm:flex-row">
         <div className="card-content flex-1">
           <h3 className="text-2xl mb-4 font-semibold text-teal-600">
@@ -46,7 +45,6 @@ const Visits = () => {
         />
       </div>
 
-      {/* Card 2 - Laboratories */}
       <div className="bg-gray-50 rounded p-6 mb-6 flex flex-col sm:flex-row">
         <div className="card-content flex-1">
           <h3 className="text-2xl mb-4 font-semibold text-teal-600">
@@ -84,7 +82,6 @@ const Visits = () => {
         />
       </div>
 
-      {/* Card 3 - Vaccination centers */}
       <div className="bg-gray-50 rounded p-6 mb-6 flex flex-col sm:flex-row">
         <div className="card-content flex-1">
           <h3 className="text-2xl mb-4 font-semibold text-teal-600">
@@ -117,7 +114,6 @@ const Visits = () => {
       </h3>
       <hr className="border-t-2 border-gray-300 mb-4" />
 
-      {/* Card 4 - Visit to Inpatients */}
       <div className="bg-gray-50 rounded p-6 mb-6 flex flex-col sm:flex-row">
         <div className="card-content flex-1">
           <h3 className="text-2xl mb-4 font-semibold text-teal-600">

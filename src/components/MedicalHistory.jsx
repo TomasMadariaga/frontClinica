@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const ClinicalHistory = () => {
+  document.title = "Medical History";
+
   const { id } = useParams();
   const userId = localStorage.getItem("id");
   const {
@@ -78,14 +80,14 @@ const ClinicalHistory = () => {
   };
 
   if (!clinicalHistory || !hasPermissionToView()) {
-  return (
-    <div className="max-w-3xl mx-auto bg-white p-8 rounded-md shadow-md mt-8 my-3">
-      <p className="text-red-500 text-2xl font-semibold">
-        Este paciente no posee una historia clinica
-      </p>
-    </div>
-  );
-}
+    return (
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-md shadow-md mt-8 my-3">
+        <p className="text-red-500 text-2xl font-semibold">
+          Este paciente no posee una historia clinica
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto bg-white p-8 rounded-md shadow-md mt-8 my-3">

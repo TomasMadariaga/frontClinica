@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Login = ({ handleLogin }) => {
+  document.title = "Login"
   const { dispatch } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
@@ -33,16 +34,15 @@ const Login = ({ handleLogin }) => {
         "http://localhost:3000/auth/login",
         formData
       );
-      console.log(response.data)
       const token = response.data.token;
       const role = response.data.role;
       const name = response.data.name;
-      const id = parseInt(response.data.id)
+      const id = parseInt(response.data.id);
       dispatch({ type: "LOGIN", payload: { token, role } });
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       localStorage.setItem("name", name);
-      localStorage.setItem("id", id)
+      localStorage.setItem("id", id);
       handleLogin(response.data);
 
       console.log("Inicio de sesión exitoso:");
@@ -50,7 +50,7 @@ const Login = ({ handleLogin }) => {
       navigate("/");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      toast.error(`Email o contraseña incorrectas`)
+      toast.error(`Email o contraseña incorrectas`);
     }
   };
 
@@ -103,7 +103,7 @@ const Login = ({ handleLogin }) => {
           Sign In
         </button>
       </form>
-    <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

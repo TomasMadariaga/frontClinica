@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { confirmAlert } from "react-confirm-alert"; // Import
+import { confirmAlert } from "react-confirm-alert"; 
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 export const Admin = () => {
@@ -51,6 +52,7 @@ export const Admin = () => {
     }
   };
 
+  document.title = "Admin";
   useEffect(() => {
     axios
       .get("http://localhost:3000/auth/users")

@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Register from "./components/RegisterPatient";
 import Login from "./components/Login";
 import { Navbar } from "./components/Navbar";
@@ -8,7 +8,6 @@ import { Admin } from "./components/Admin";
 import { useAuth } from "./context/AuthContext";
 import { AuthProvider } from "./context/AuthContext";
 import Footer from "./components/Footer";
-// import Payment from "./components/Payment";
 import { Medic } from "./components/Medic";
 import { Patient } from "./components/Patient";
 import ClinicalHistory from "./components/MedicalHistory";
@@ -19,6 +18,9 @@ import Visits from "./components/Visits";
 import Contact from "./components/Contact";
 import { Profile } from "./components/Profile";
 import Articles from "./components/Articles";
+import { PayPalScriptProvider} from "@paypal/react-paypal-js";
+import { ToastContainer } from "react-toastify";
+import { Shifts } from "./components/Shifts";
 
 function App() {
   const { state, dispatch } = useAuth();
@@ -26,7 +28,6 @@ function App() {
 
   const handleLogin = (userData) => {
     setUser(userData);
-    console.log(userData);
   };
 
   const handleLogout = () => {
@@ -66,6 +67,36 @@ function App() {
           <Route path="/articles" element={<Articles />} />
         </Routes>
         <Footer />
+        <PayPalScriptProvider>
+          <ToastContainer />
+          <Navbar user={user} handleLogout={handleLogout} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/auth/register/patient"
+              element={<Register title="register" />}
+            />
+            <Route
+              path="/auth/login"
+              element={<Login handleLogin={handleLogin} />}
+            />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/medic" element={<Medic />} />
+            <Route path="/patient" element={<Patient />} />
+            <Route path="/historia-clinica/:id" element={<ClinicalHistory />} />
+            <Route path="/medical-list" element={<MedicalList />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route
+              path="/terms-and-conditions"
+              element={<TermsAndConditions />}
+            />
+            <Route path="/hours-of-operation-and-visits" element={<Visits />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/shift/:id" element={<Shifts />} />
+          </Routes>
+          <Footer />
+        </PayPalScriptProvider>
       </AuthProvider>
     </BrowserRouter>
   );

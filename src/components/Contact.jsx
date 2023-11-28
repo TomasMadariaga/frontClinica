@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
 const Contacto = () => {
+  document.title = "Contact form";
   return (
     <div className="flex items-center justify-center p-12">
       <div className="mx-auto w-full max-w-[550px] bg-white p-4 rounded-md shadow-md">
