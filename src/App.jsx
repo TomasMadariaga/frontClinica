@@ -17,12 +17,11 @@ import TermsAndConditions from "./components/TermsAndConditions";
 import Visits from "./components/Visits";
 import Contact from "./components/Contact";
 import { Profile } from "./components/Profile";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { Payment } from "./components/Payment";
+import { PayPalScriptProvider} from "@paypal/react-paypal-js";
 import { ToastContainer } from "react-toastify";
+import { Shifts } from "./components/Shifts";
 
 function App() {
-  
   const { state, dispatch } = useAuth();
   const [user, setUser] = useState(null);
 
@@ -39,18 +38,11 @@ function App() {
     window.location.href = "/auth/login";
   };
 
-  const initialOptions = {
-    clientId:
-      "AUZIXJ5RkyqnZkjTcK8PQ6tnhraDd2cHn0SdM5ZkYQRt28fXJVCkwX72u56djM4ucxYZ_A21VMNtEgEa",
-    currency: "USD",
-    intent: "CAPTURE",
-  };
-
   return (
     <BrowserRouter>
       <AuthProvider>
         <PayPalScriptProvider>
-          <ToastContainer/>
+          <ToastContainer />
           <Navbar user={user} handleLogout={handleLogout} />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -74,8 +66,8 @@ function App() {
             />
             <Route path="/hours-of-operation-and-visits" element={<Visits />} />
             <Route path="/contact" element={<Contact />} />
-
             <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/shift/:id" element={<Shifts />} />
           </Routes>
           <Footer />
         </PayPalScriptProvider>

@@ -1,10 +1,25 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/icon3.webp";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const Navbar = ({ user, handleLogout }) => {
+  const [shift, setShifts] = useState([]);
+
   const storedRole = localStorage.getItem("role");
   const storedToken = localStorage.getItem("token");
   const storedId = localStorage.getItem("id");
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/turnos/patient-user-id/${storedId}`)
+      .then((response) => {
+        setShifts(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const isAdmin =
     (user && user.role === "admin") ||
@@ -43,8 +58,16 @@ export const Navbar = ({ user, handleLogout }) => {
             </Link>
           </li>
         )}
+        {shift && (
+          <Link
+          to={`/shift/${storedId}`}
+          className="font-sans font-medium text-slate-100 text-xl hover:text-slate-300 mx-2"
+        >
+          My shifts
+        </Link>
+        )}
         {isPatient && (
-          <li className="py-2.5 pr-4">
+          <li className="py-2.5 pr-4 mx-2">
             <span className="border-r border-slate-500 pr-4">
               <Link
                 to="/patient"
@@ -55,6 +78,7 @@ export const Navbar = ({ user, handleLogout }) => {
             </span>
           </li>
         )}
+        
         <li className="py-2.5 px-4">
           {storedToken ? (
             <button
@@ -66,7 +90,7 @@ export const Navbar = ({ user, handleLogout }) => {
           ) : (
             <Link
               to="/auth/login"
-              className="font-sans font-medium text-slate-100 text-xl hover:text-indigo-500"
+              className="font-sans font-medium text-slate-100 text-xl hover:text-slate-300"
             >
               Sign In
             </Link>

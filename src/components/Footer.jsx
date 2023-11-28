@@ -52,7 +52,7 @@ function Footer() {
               <FaInstagram className="text-2xl cursor-pointer hover:text-yellow-600" />
               <RiTwitterXFill className="text-2xl cursor-pointer hover:text-blue-600" />
               <FaLinkedin className="text-2xl cursor-pointer hover:text-blue-600" />
-              <FaYoutube className="text-2xl cursor-pointer hover:text-red-600" />
+              <Link to='https://youtu.be/dQw4w9WgXcQ?si=Uv8C7zZrFKS3-7XEh'><FaYoutube className="text-2xl cursor-pointer hover:text-red-600" /></Link>
             </div>
           </ul>
         </div>
