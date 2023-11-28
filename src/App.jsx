@@ -22,6 +22,7 @@ import { Payment } from "./components/Payment";
 import { ToastContainer } from "react-toastify";
 
 function App() {
+  
   const { state, dispatch } = useAuth();
   const [user, setUser] = useState(null);
 
@@ -51,7 +52,6 @@ function App() {
         <PayPalScriptProvider>
           <ToastContainer/>
           <Navbar user={user} handleLogout={handleLogout} />
-          <Payment/>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route

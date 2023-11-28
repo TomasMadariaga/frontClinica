@@ -1,4 +1,3 @@
-import React from "react";
 import { infoPlans } from "./CardText";
 
 function Card() {
